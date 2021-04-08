@@ -3,6 +3,19 @@ uuid = "9fd8a0a8-ee88-4ba4-9517-a9080e99fdd2"
 authors = ["josePereiro <jose.pereiro.lab@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+Chemostat = "c5987326-81b3-11ea-28dd-b531745de20f"
+ChemostatPlots = "a87e7f4e-3b34-4b5e-ad6b-f0ab85127471"
+Chemostat_Folsom2014 = "00d3f078-7623-4eb4-9094-80f290b0a20e"
+Chemostat_Heerden2013 = "8fa5c008-a42b-11ea-347c-a57b2769cfbc"
+Chemostat_Kayser2005 = "62075988-fc80-11ea-3c7a-ad81f43b029e"
+DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
+MAT = "23992714-dd62-5051-b70f-ba57cb901cac"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+UtilsJL = "1d417f3e-fd42-11ea-18da-dda57c9b97b2"
+
 [compat]
 julia = "1.5"
 
