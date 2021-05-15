@@ -1,0 +1,33 @@
+{
+    "spellright.language": [
+        "en",
+        "es",
+        "cs",
+        "da",
+        "de",
+        "fr",
+        "it",
+        "hu",
+        "nl",
+        "pl",
+        "pt",
+        "ro",
+        "fi",
+        "sv",
+        "vi",
+        "tr",
+        "el",
+        "ru",
+        "ar",
+        "hi",
+        "pa",
+        "te",
+        "ko"
+    ],
+    "spellright.documentTypes": [
+        "markdown",
+        "latex",
+        "plaintext",
+        "julia"
+    ]
+}

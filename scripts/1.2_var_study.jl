@@ -4,6 +4,7 @@ let
     zeroth = 1e-2
     for (iJR, Data) in [
                 (ChK.iJR904, ChK.KayserData), 
+                (ChN.iJR904, ChN.NanchenData), 
                 (ChF.iJR904, ChF.FolsomData), 
                 (ChH.iJR904, ChH.HeerdenData), 
             ]
@@ -47,8 +48,8 @@ let
 
         for ider in FLX_IDERS
             stds = DAT[method, :err, ider, EXPS]
-            color = ider_color[ider]
-            marker = source_marker[Data]
+            color = ider_colors[ider]
+            marker = source_markers[Data]
 
             for p_ in [p, all_p]
                 scatter!(p_, vols[sidxs], stds[sidxs]; 
@@ -66,11 +67,11 @@ let
         for ider in FLX_IDERS
 
             std = DAT[method, :err, ider]
-            marker = source_marker[Data]
+            marker = source_markers[Data]
 
             for (m, color) in [
                     [(10, marker), :black], 
-                    [(8, marker), ider_color[ider]], 
+                    [(8, marker), ider_colors[ider]], 
                     [(3, :circle), :black], 
                 ]
                 scatter!(all_p, [vol], [std]; label = "", m, color)

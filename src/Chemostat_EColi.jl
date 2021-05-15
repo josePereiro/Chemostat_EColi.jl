@@ -20,4 +20,12 @@ module Chemostat_EColi
         UJL.create_proj_dirs(@__MODULE__)
     end
 
+    # DAT
+    # ---------------------------------------------------------------------------------
+    DATfile(src) = procdir(UJL.mysavename("dat", ".jls"; src))
+    function load_DAT(src)
+        DAT_FNAME = UJL.mysavename("dat", ".jls"; src)
+        deserialize(procdir(DAT_FNAME))
+    end
+
 end

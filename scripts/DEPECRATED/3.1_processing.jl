@@ -35,7 +35,7 @@ end
 LPDAT = ChU.load_data(iJR.LP_DAT_FILE)
 
 const FBA_Z_FIX_MIN_COST = :FBA_Z_FIX_MIN_COST
-const FBA_MAX_BIOM_MIN_COST = :FBA_MAX_BIOM_MIN_COST
+const FBA_MAX_Z_MIN_COST = :FBA_MAX_Z_MIN_COST
 const FBA_Z_FIX_MIN_VG_COST = :FBA_Z_FIX_MIN_VG_COST
 const FBA_Z_VG_FIX_MIN_COST = :FBA_Z_VG_FIX_MIN_COST
 
@@ -63,14 +63,14 @@ end
 
 method_colors = Dict(
     FBA_Z_FIX_MIN_COST => :red,
-    FBA_MAX_BIOM_MIN_COST => :orange,
+    FBA_MAX_Z_MIN_COST => :orange,
     FBA_Z_FIX_MIN_VG_COST => :blue,
     FBA_Z_VG_FIX_MIN_COST => :purple,
 )
 
 ALL_METHODS = [
     FBA_Z_FIX_MIN_COST,
-    FBA_MAX_BIOM_MIN_COST, 
+    FBA_MAX_Z_MIN_COST, 
     FBA_Z_FIX_MIN_VG_COST,
     FBA_Z_VG_FIX_MIN_COST
 ]

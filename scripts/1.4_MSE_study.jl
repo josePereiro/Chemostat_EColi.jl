@@ -4,6 +4,7 @@
 
 #     for (iJR, Data) in [
 #             (ChK.iJR904, ChK.KayserData), 
+#             (ChN.iJR904, ChN.NanchenData), 
 #             (ChF.iJR904, ChF.FolsomData), 
 #             (ChH.iJR904, ChH.HeerdenData), 
 #         ]
@@ -54,6 +55,7 @@ let
     zeroth = 1e-2
     for (iJR, Data) in [
                 (ChK.iJR904, ChK.KayserData), 
+                (ChN.iJR904, ChN.NanchenData), 
                 (ChF.iJR904, ChF.FolsomData), 
                 (ChH.iJR904, ChH.HeerdenData), 
             ]
@@ -137,6 +139,79 @@ let
     plot!(all_p; xscale = :log10)
     mysavefig(all_p, "pol_box_vs_MSE")
 end  
+
+## -------------------------------------------------------------------
+# TODO: work better inter project comunication
+# MSE FBA vs ME
+let
+    
+    DAT_FILE_PREFFIX =  "maxent_ep_dat"
+    me_method = :ME_MAX_POL
+    fba_method = :FBA_Z_FIX_MIN_COST
+
+    p0 = plot(;xlabel = "experiment", ylabel = "MSE [FBA - ME]",)
+    for (iJR, Data) in [
+        (ChK.iJR904, ChK.KayserData),
+        (ChN.iJR904, ChN.NanchenData), 
+        (ChF.iJR904, ChF.FolsomData),
+        (ChH.iJR904, ChH.HeerdenData),
+    ]
+        src = nameof(Data)
+        marker = (8, source_markers[Data])
+
+        datfile = iJR.procdir("dat.bson")
+        DAT = UJL.load_data(datfile; verbose = false)
+
+        # Preload FBA Data
+        LP_DAT_FILE = iJR.procdir("lp_dat_file.bson")
+        LP_DAT = UJL.load_data(LP_DAT_FILE; verbose = false);
+
+        EXPS = DAT[:EXPS]
+        MSEs = []
+        p = deepcopy(p0)
+        for exp in EXPS
+
+            # norm
+            exp_glc = DAT[:exp, :flx, "GLC", exp]
+
+            # load ME dat
+            ME_DAT = UJL.mysavename(DAT_FILE_PREFFIX, "jls"; 
+                method = me_method, exp
+            ) |> iJR.procdir |> deserialize
+
+            # common rxns
+            me_model = ME_DAT[:model]
+            fba_model = LP_DAT[fba_method, :model, exp]
+            RXNS = intersect(me_model.rxns, fba_model.rxns)
+
+            # ME flxs
+            epouts = ME_DAT[:epouts]
+            exp_beta = maximum(keys(epouts))
+            epout = epouts[exp_beta]
+            me_flxs = ChU.av.([me_model], [epout], RXNS)
+            @show length(me_flxs)
+            
+            # FBA
+            fbaout = LP_DAT[fba_method, :fbaout, exp]
+            fba_flxs = ChU.av.([fba_model], [fbaout], RXNS)
+            @show length(fba_flxs)
+            println()
+            
+            # MSE
+            MSEsum = sum(((me_flxs ./ exp_glc) .- (fba_flxs ./ exp_glc)).^2)
+            MSE = MSEsum / length(fba_flxs)
+            push!(MSEs, MSE)
+            
+        end
+        scatter!(p, EXPS, MSEs; label = "",
+            alpha = 0.8, color = :black, m = 6
+        )
+        plot!(p, EXPS, MSEs; label = "",
+            alpha = 0.6, ls = :dash, lw = 3, color = :black
+        )
+        mysavefig(p, "MSE_fba_vs_me"; src)
+    end
+end
 
 ## -------------------------------------------------------------------
 # # MSE per ider
