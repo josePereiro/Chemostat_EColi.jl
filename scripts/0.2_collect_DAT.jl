@@ -142,6 +142,8 @@ end
 ## ----------------------------------------------------------------------------------
 function collect_ME_DAT!(DAT, iJR)
 
+    proj = string(parentmodule(iJR))
+
     costider = iJR.COST_IDER
     objider = iJR.BIOMASS_IDER
 
@@ -187,6 +189,7 @@ function collect_ME_DAT!(DAT, iJR)
             
             lock(WLOCK) do
                 @info("Doing", 
+                    proj,
                     exp, method, 
                     length(dat[:epouts]), 
                     epout.iter, thid
@@ -210,6 +213,9 @@ function collect_ME_DAT!(DAT, iJR)
             for Ed_met in DAT[:FLX_IDERS]
                 model_exch = rxns_map[Ed_met]
 
+                # check cache
+                haskey(DAT, depks(method, :proj, Ed_met, exp)...) && continue
+
                 # flxs
                 ep_av = ChU.av(model, epout, model_exch)
                 ep_std = sqrt(ChU.va(model, epout, model_exch))
@@ -226,6 +232,10 @@ function collect_ME_DAT!(DAT, iJR)
 
             # inner flxs
             for (exider, model_iders) in iJR.load_inners_idermap()
+
+                # check cache
+                haskey(DAT, depks(method, :proj, exider, exp)...) && continue
+
                 # flxs
                 ep_av = ChU.av(model, epout, model_iders[1])
                 ep_std = sqrt(ChU.va(model, epout, model_iders[1]))
@@ -253,19 +263,25 @@ function collect_ME_DAT!(DAT, iJR)
 end
 
 ## ----------------------------------------------------------------------------------
-function collect_lp_DAT!(DAT, iJR)
+function collect_lp_DAT!(DAT, Ed, iJR)
+
+    proj = string(parentmodule(iJR))
+    src = string(nameof(Ed))
 
     rxns_map = iJR.load_rxns_map()
 
     objider = iJR.BIOMASS_IDER
     costider = iJR.COST_IDER
 
-    LP_DAT_FILE = iJR.procdir("lp_dat_file.bson")
-    LP_DAT = ChU.load_data(LP_DAT_FILE; verbose = false);
+    LP_DAT = ChE.load_LP_DAT(src)
 
     for method in DAT[:LP_METHODS]
             
         for exp in DAT[:EXPS]
+
+            @info("Doing", 
+                proj, exp, method
+            ); println()
 
             model = LP_DAT[method, :model, exp]
             fbaout = LP_DAT[method, :fbaout, exp]
@@ -284,6 +300,7 @@ function collect_lp_DAT!(DAT, iJR)
 
                 fba_flx = ChU.av(model, fbaout, model_ider)
                 DAT[method, :flx, Ed_ider, exp] = fba_flx
+                DAT[method, :err, Ed_ider, exp] = 0.0
             end
 
             idermap = merge(iJR.load_inners_idermap(), iJR.load_inners_idermap())
@@ -311,12 +328,15 @@ let
         (NiJR, Nd, Nd.EXPS, ["GLC", "AC"]),
         (KiJR, Kd, 5:13, ["GLC", "CO2", "O2", "AC", "NH4"]),
         (FiJR, Fd, 1:4, ["GLC", "SUCC", "AC", "FORM"]),
+        (HiJR, Hd, 1:13, ["GLC", "SUCC", "AC", "FORM"]),
     ]
         src = string(nameof(Ed))
         
         # ---------------------------------------------------------------------------------
         DAT_FILE = ChE.DATfile(src)
         DAT = (!isfile(DAT_FILE) || new_dat) ? ChU.DictTree() : ChE.load_DAT(src)
+        # OLD_DAT_FNAME = iJR.procdir("dat.bson")
+        # DAT = ChU.load_data(OLD_DAT_FNAME; verbose = false);
 
         DAT[:EXPS] = EXPS
         DAT[:FLX_IDERS] = FLX_IDERS
@@ -349,7 +369,7 @@ let
         ]
 
         DAT[:ME_METHODS] = [
-            # ME_Z_OPEN_G_OPEN, 
+            ME_Z_OPEN_G_OPEN, 
             ME_MAX_POL,
             ME_MAX_POL_B0,
             # ME_Z_FIXXED_G_BOUNDED, 
@@ -361,8 +381,8 @@ let
         
         # ---------------------------------------------------------------------------------
         collect_commom_DAT!(DAT, Ed, iJR)
+        skip_lp || collect_lp_DAT!(DAT, Ed, iJR)
         skip_me || collect_ME_DAT!(DAT, iJR)
-        skip_lp || collect_lp_DAT!(DAT, iJR)
         
         # ---------------------------------------------------------------------------------
         # saving
