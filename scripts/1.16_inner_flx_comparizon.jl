@@ -1,7 +1,43 @@
 ## -------------------------------------------------------------------
+let
+    iJR = NiJR
+    Ed = Nd
+
+    objider = iJR.BIOMASS_IDER
+    costider = iJR.COST_IDER
+    exglcider = iJR.EX_GLC_IDER
+    ids = [objider, costider, exglcider, "GLCpts", "PGI_fwd"]
+
+    exp = 4
+    # methods = [:FBA_Z_FIX_MIN_VG_MIN_COST, :FBA_Z_FIX_MIN_VG_MAX_COST]
+    methods = [:FBA_Z_FIX_MAX_VG_MIN_COST, :FBA_Z_FIX_MAX_VG_MAX_COST]
+    LP_DAT = ChE.load_LP_DAT(nameof(Ed));
+
+    # for method in methods
+    #     LP_DAT |> keys
+    # end
+    method1 = methods[1]
+    model1 = LP_DAT[method1][:model][exp]
+    fbaout1 = LP_DAT[method1][:fbaout][exp]
+
+    method2 = methods[2]
+    model2 = LP_DAT[method2][:model][exp]
+    fbaout2 = LP_DAT[method2][:fbaout][exp]
+
+    lim = [-15, 15]
+    p = scatter(fbaout1.v, fbaout2.v; 
+        label = "", m = 8, alpha = 0.7, 
+        xlim = lim, ylim = lim,
+        xlabel = string(methods[1]),
+        ylabel = string(methods[2])
+    )
+    mysavefig(p, "test")
+end
+
+## -------------------------------------------------------------------
 # model vs exp comparison
 let
-    METHODS = [:FBA_Z_FIX_MIN_VG_MAX_COST, :ME_MAX_POL]
+    METHODS = [:FBA_Z_FIX_MIN_VG_MIN_COST, :FBA_Z_FIX_MIN_VG_MAX_COST, :ME_MAX_POL]
     # METHODS = [LP_METHODS; :ME_MAX_POL]
 
     iJR = ChN.iJR904
@@ -17,8 +53,7 @@ let
     # Collect
     src = nameof(Data)
 
-    datfile = iJR.procdir("dat.bson")
-    DAT = UJL.load_data(datfile; verbose = false)
+    DAT = ChE.load_DAT(src)
 
     FLX_IDERS = sort_iders(DAT[:FLX_IDERS])
     # EXPS = DAT[:EXPS]

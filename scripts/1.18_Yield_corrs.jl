@@ -39,21 +39,19 @@ let
         (ChK.iJR904, ChK.KayserData), 
         (ChN.iJR904, ChN.NanchenData), 
         (ChF.iJR904, ChF.FolsomData), 
-        # (ChH.iJR904, ChH.HeerdenData), 
+        (ChH.iJR904, ChH.HeerdenData), 
     ]
         src = nameof(Data)
         marker = (6, source_markers[Data])
 
-        datfile = iJR.procdir("dat.bson")
-        DAT = UJL.load_data(datfile; verbose = false)
+        DAT = ChE.load_DAT(src)
 
         EXPS = DAT[:EXPS]
+        # EXPS = Data.EXPS
     
         @info("Doing", src, method)
         
         model_vals = DAT[method, :flx, "D", EXPS] ./ DAT[method, :flx, "GLC", EXPS]
-        # model_errs = haskey(DAT[method], :err) ? 
-        #     DAT[method, :err, "D", EXPS] : fill(0.0, length(EXPS))
 
         exp_vals = DAT[:exp, :flx, "D", EXPS] ./ DAT[:exp, :flx, "GLC", EXPS]
         # color = [exp_colors[exp] for exp in EXPS]
@@ -73,4 +71,4 @@ let
     )
     plot!(;legend = :bottomright)
     mysavefig(p, "max_yield_coor")
-end
+end 

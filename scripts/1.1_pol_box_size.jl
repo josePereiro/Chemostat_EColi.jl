@@ -25,10 +25,10 @@ function plot_pol_box_size(iJR, Data;
 
     box_vols = zeros(bins, bins) 
     
+    DAT = ChE.load_DAT(src)
     # ids = ["GLC", "AC", "NH4"] # commom iders
-    datfile = iJR.procdir("dat.bson")
-    DAT = UJL.load_data(datfile; verbose = false)
-    ids = DAT[:FLX_IDERS]
+    # ids = DAT[:FLX_IDERS]
+    ids = ["GLC"] 
 
     model_ids = [rxns_map[id] for id in ids]
     model_idxs = [ChU.rxnindex(model0, model_id) for model_id in model_ids]
@@ -58,7 +58,8 @@ function plot_pol_box_size(iJR, Data;
 
     # vol map
     p = heatmap(Ds, cgD_Xs, box_vols'; 
-        title = source_labels[Data], label = "", 
+        # title = source_labels[Data], 
+        label = "", 
         xlabel = "D (1/ h)", ylabel = "-cgD/X (mmol/ gCDW h)",
         thickness_scaling = 1.3, 
         dpi = 1000
@@ -79,10 +80,10 @@ end
 let
     # setup
     for (iJR, Data) in [
+            # (ChN.iJR904, ChN.NanchenData), 
             # (ChK.iJR904, ChK.KayserData), 
-            (ChN.iJR904, ChN.NanchenData), 
             # (ChF.iJR904, ChF.FolsomData), 
-            # (ChH.iJR904, ChH.HeerdenData), 
+            (ChH.iJR904, ChH.HeerdenData), 
         ]
         Dlim = [0.01, 0.5]
         cgD_Xlim = [-40.0, 0.0]
@@ -90,7 +91,7 @@ let
     end
 end
 
-# ## -------------------------------------------------------------------
+## -------------------------------------------------------------------
 # # method_diffs vs vol
 # let
 #     me_method = :ME_MAX_POL

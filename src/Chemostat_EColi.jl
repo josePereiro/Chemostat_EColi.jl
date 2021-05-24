@@ -16,16 +16,18 @@ module Chemostat_EColi
     const UJL = UtilsJL
     UJL.gen_top_proj(@__MODULE__)
 
+    using Serialization
+
     function __init__()
         UJL.create_proj_dirs(@__MODULE__)
     end
 
-    # DAT
     # ---------------------------------------------------------------------------------
+    # Dat
     DATfile(src) = procdir(UJL.mysavename("dat", ".jls"; src))
-    function load_DAT(src)
-        DAT_FNAME = UJL.mysavename("dat", ".jls"; src)
-        deserialize(procdir(DAT_FNAME))
-    end
+    load_DAT(src) = deserialize(DATfile(src))
+    
+    LP_DATfile(src) = procdir(UJL.mysavename("lp_dat", ".jls"; src))
+    load_LP_DAT(src) = deserialize(LP_DATfile(src))
 
 end

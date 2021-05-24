@@ -163,8 +163,7 @@ let
         DAT = UJL.load_data(datfile; verbose = false)
 
         # Preload FBA Data
-        LP_DAT_FILE = iJR.procdir("lp_dat_file.bson")
-        LP_DAT = UJL.load_data(LP_DAT_FILE; verbose = false);
+        LP_DAT = ChE.load_LP_DAT(src)
 
         EXPS = DAT[:EXPS]
         MSEs = []

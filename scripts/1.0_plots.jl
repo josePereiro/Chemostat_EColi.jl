@@ -147,7 +147,7 @@ subs_colors = Dict(
 )
 
 source_markers = Dict(
-    # Hd => :circle, 
+    Hd => :pentagon, 
     Kd => :square, 
     Fd => :circle, 
     Nd => :utriangle, 
@@ -156,7 +156,7 @@ source_markers = Dict(
 source_labels = Dict(
     Kd => "Kayser", 
     Nd => "Nanchen", 
-    # Hd => "Heerden", 
+    Hd => "Heerden", 
     Fd => "Folsom", 
 )
 
@@ -179,6 +179,7 @@ method_colors = let
         dict_[method] = color
     end
     dict_[FBA_Z_FIX_MIN_VG_MAX_COST] = :red
+    dict_[FBA_Z_FIX_MIN_VG_MIN_COST] = :green
     dict_
 end
 

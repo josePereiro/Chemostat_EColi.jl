@@ -102,16 +102,16 @@ let
 
     METHODS = [
 
-        # FBA_Z_FIX_MAX_VG_MIN_COST, 
-        # FBA_Z_FIX_MIN_VG_MIN_COST, 
-        # FBA_Z_FIX_MAX_VG_MAX_COST, 
+        FBA_Z_FIX_MAX_VG_MIN_COST, 
+        FBA_Z_FIX_MIN_VG_MIN_COST, 
+        FBA_Z_FIX_MAX_VG_MAX_COST, 
         FBA_Z_FIX_MIN_VG_MAX_COST,
-        # FBA_Z_VG_FIX_MAX_COST, 
-        # FBA_Z_VG_FIX_MIN_COST, 
-        # FBA_Z_FIX_MAX_COST, 
-        # FBA_Z_FIX_MIN_COST, 
-        # FBA_MAX_Z_MIN_COST, 
-        # FBA_MAX_Z_MAX_COST,
+        FBA_Z_VG_FIX_MAX_COST, 
+        FBA_Z_VG_FIX_MIN_COST, 
+        FBA_Z_FIX_MAX_COST, 
+        FBA_Z_FIX_MIN_COST, 
+        FBA_MAX_Z_MIN_COST, 
+        FBA_MAX_Z_MAX_COST,
         
         ME_MAX_POL,
         # ME_Z_EXPECTED_G_BOUNDED
@@ -121,16 +121,16 @@ let
 
     METHODS_LABELS = [
         # "\$ \\textbf{FBA} \$",
-        # "FBA_Z_FIX_MAX_VG_MIN_COST", 
-        # FBA_Z_FIX_MIN_VG_MIN_COST, 
-        # "FBA_Z_FIX_MAX_VG_MAX_COST", 
+        "FBA_Z_FIX_MAX_VG_MIN_COST", 
+        FBA_Z_FIX_MIN_VG_MIN_COST, 
+        "FBA_Z_FIX_MAX_VG_MAX_COST", 
         "\$ \\textbf{FBA} \\textbf{ (abs. flux)} \$",
-        # "FBA_Z_VG_FIX_MAX_COST", 
-        # "FBA_Z_VG_FIX_MIN_COST", 
-        # "FBA_Z_FIX_MAX_COST", 
-        # "FBA_Z_FIX_MIN_COST", 
-        # "FBA_MAX_Z_MIN_COST", 
-        # "FBA_MAX_Z_MAX_COST",
+        "FBA_Z_VG_FIX_MAX_COST", 
+        "FBA_Z_VG_FIX_MIN_COST", 
+        "FBA_Z_FIX_MAX_COST", 
+        "FBA_Z_FIX_MIN_COST", 
+        "FBA_MAX_Z_MIN_COST", 
+        "FBA_MAX_Z_MAX_COST",
 
         MEname(1), # "ME unbiased",
         # MEname(0)
@@ -151,17 +151,15 @@ let
 
         for (iJR, Data) in [
             (ChK.iJR904, ChK.KayserData),
-            (ChN.iJR904, ChN.NanchenData), 
-            (ChF.iJR904, ChF.FolsomData),
+            # (ChN.iJR904, ChN.NanchenData), 
+            # (ChF.iJR904, ChF.FolsomData),
             # (ChH.iJR904, ChH.HeerdenData),
         ]
             src = nameof(Data)
             marker = (6, source_markers[Data])
 
             @show src
-
-            datfile = iJR.procdir("dat.bson")
-            DAT = UJL.load_data(datfile; verbose = false)
+            DAT = ChE.load_DAT(src)
 
             # FLX_IDERS = DAT[:FLX_IDERS]
             # FLX_IDERS = ["GLC", "AC"]
@@ -234,7 +232,6 @@ let
 end 
 
 ## -------------------------------------------------------------------
-# TODO: work better inter project comunication
 # Full corr FBA vs ME
 let
     
@@ -260,12 +257,10 @@ let
         src = nameof(Data)
         marker = (8, source_markers[Data])
 
-        datfile = iJR.procdir("dat.bson")
-        DAT = UJL.load_data(datfile; verbose = false)
+        DAT = ChE.load_DAT(src)
 
         # Preload FBA Data
-        LP_DAT_FILE = iJR.procdir("lp_dat_file.bson")
-        LP_DAT = UJL.load_data(LP_DAT_FILE; verbose = false);
+        LP_DAT = ChE.load_LP_DAT(src)
 
         EXPS = DAT[:EXPS]
         src_p = deepcopy(p0)

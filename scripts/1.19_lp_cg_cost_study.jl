@@ -12,9 +12,10 @@ let
         FBA_Z_FIX_MIN_COST, 
         FBA_MAX_Z_MIN_COST, 
         FBA_MAX_Z_MAX_COST,
-        
+
         ME_MAX_POL,
-        ME_Z_EXPECTED_G_BOUNDED
+        ME_Z_EXPECTED_G_BOUNDED, 
+        # ME_Z_OPEN_G_OPEN
     ]
 
     fontsize = 13
@@ -35,12 +36,13 @@ let
             (ChK.iJR904, ChK.KayserData), 
             (ChN.iJR904, ChN.NanchenData), 
             (ChF.iJR904, ChF.FolsomData), 
-            # (ChH.iJR904, ChH.HeerdenData),
+            (ChH.iJR904, ChH.HeerdenData),
         ]
             src = nameof(Data)
+            
             marker = (6, source_markers[Data])
 
-            DAT = load_DAT(src)
+            DAT = ChE.load_DAT(src)
 
             EXPS = DAT[:EXPS]
             
