@@ -1,3 +1,13 @@
+## ---------------------------------------------------------------------------------
+function _box_vol(model, idxs)
+    try
+        L, U = ChLP.fva(model, idxs)
+        vol = prod(abs.(L .- U))
+        max(0.0, log10(vol + 1e-50))
+    catch; NaN end
+end
+
+## ---------------------------------------------------------------------------------
 function plot_pol_box_size(iJR, Data; 
         Dlim = nothing, 
         cgD_Xlim = nothing,
@@ -49,7 +59,7 @@ function plot_pol_box_size(iJR, Data;
                 # Reduce Pol
                 ChU.lb!(model, exglcidx, cgD_X)
                 ChU.bounds!(model, biomidx, D, D)
-                box_vols_[Di, cgD_Xi] = box_vol(model, model_idxs)
+                box_vols_[Di, cgD_Xi] = _box_vol(model, model_idxs)
             end
         end
 

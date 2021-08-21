@@ -1,5 +1,4 @@
-using Plots: length
-using Serialization: include
+using ProjAssistant: ImgTools
 using ProjAssistant
 @quickactivate
 
@@ -32,6 +31,9 @@ using ProjAssistant
     const ChU = Ch.Utils
     const ChLP = Ch.LP
 
+    import ImgTools
+    import ImgTools: make_grid, WHITE_PIX
+
     using ProgressMeter
     using Base.Threads
     using SparseArrays
@@ -46,35 +48,6 @@ using ProjAssistant
 end
 
 ## ---------------------------------------------------------------------------------
-myminmax(a) = isempty(a) ? (0.0, 0.0) : (minimum(a), maximum(a))
-
-function box_vol(model, idxs)
-    try
-        L, U = ChLP.fva(model, idxs)
-        vol = prod(abs.(L .- U))
-        max(0.0, log10(vol + 1e-50))
-    catch; NaN end
-end
-
-## ---------------------------------------------------------------------------------
-LP_METHODS = [
-    :FBA_Z_FIX_MAX_VG_MIN_COST, :FBA_Z_FIX_MAX_VG_MAX_COST, 
-    :FBA_Z_FIX_MIN_VG_MIN_COST, :FBA_Z_FIX_MIN_VG_MAX_COST,
-    :FBA_Z_VG_FIX_MAX_COST, :FBA_Z_VG_FIX_MIN_COST, :FBA_Z_FIX_MAX_COST, 
-    :FBA_Z_FIX_MIN_COST, :FBA_MAX_Z_MIN_COST, :FBA_MAX_Z_MAX_COST, 
-    :FBA_Z_FIX_ADJ_MIN_VG_MIN_COST, :FBA_Z_FIX_ADJ_MIN_VG_MAX_COST,
-    :FBA_Z_FIX_MAX_ATP_MIN_COST, :FBA_Z_FIX_MAX_ATP_MAX_COST
-]
-
-ME_METHODS = [
-    :ME_MAX_POL,
-    :ME_MAX_POL_B0,
-    :ME_Z_EXPECTED_G_BOUNDED, 
-]
-
-## ---------------------------------------------------------------------------------
-ALL_IDERS = ["AC", "CO2", "FORM", "GLC", "NH4", "O2", "SUCC"]
-
 ider_colors = Dict(
     "GLC" => :black, 
     "CO2" => :blue, 
@@ -92,9 +65,6 @@ exp_colors = let
     Dict(ider => color for (ider, color) in zip(EXPS, colors))
 end
 
-# [:none, :auto, :circle, :rect, :star5, :diamond, :hexagon, :cross, :xcross, :utriangle, 
-# :dtriangle, :rtriangle, :ltriangle, :pentagon, :heptagon, :octagon, :star4, :star6, 
-# :star7, :star8, :vline, :hline, :+, :x].
 subs_markers = Dict(
     "glycolysis" => :circle,
     "krebs" => :diamond,
@@ -104,57 +74,10 @@ subs_markers = Dict(
     "glc tranport" => :hex
 )
 
-subs_colors = Dict(
-    "glycolysis" => :red,
-    "krebs" => :blue,
-    "pentose phosphate" => :yellow,
-    "others" => :purple,
-    "glyoxylate shunt" => :brown,
-    "glc tranport" => :black
-)
-
 source_markers = Dict(
     Kd => :square, 
     Fd => :circle, 
     Nd => :utriangle, 
-)
-
-source_labels = Dict(
-    Kd => "Kayser", 
-    Nd => "Nanchen", 
-    Fd => "Folsom", 
-)
-
-# method_colors = Dict(
-#     :ME_MAX_POL => :blue,
-#     :ME_Z_EXPECTED_G_BOUNDED => :purple,
-#     :FBA_Z_FIX_MIN_COST => :red,
-#     :FBA_Z_FIX_MAX_COST => :red,
-#     :FBA_Z_FIX_MIN_VG_MAX_COST => :red,
-#     :FBA_Z_FIX_MIN_VG_MIN_COST => :red,
-# )
-
-method_colors = let
-    dict_ = Dict{Symbol, Any}(
-        :ME_MAX_POL => :blue,
-        :ME_Z_EXPECTED_G_BOUNDED => :purple,
-    )
-    colors = Plots.distinguishable_colors(length(LP_METHODS))
-    for (method, color) in zip(LP_METHODS, colors)
-        dict_[method] = color
-    end
-    dict_[:FBA_Z_FIX_MIN_VG_MAX_COST] = :red
-    dict_[:FBA_Z_FIX_MIN_VG_MIN_COST] = :green
-    dict_
-end
-
-method_markers = Dict(
-    :ME_MAX_POL => :circle,
-    :ME_Z_EXPECTED_G_BOUNDED => :circle,
-    :FBA_Z_FIX_MIN_COST => :square,
-    :FBA_Z_FIX_MAX_COST => :square,
-    :FBA_Z_FIX_MIN_VG_MAX_COST => :square,
-    :FBA_Z_FIX_MIN_VG_MIN_COST => :square,
 )
 
 ## ------------------------------------------------------
@@ -203,14 +126,6 @@ let
         layout = (1, 3)
     )
 
-end
-
-## ---------------------------------------------------------------------------------
-let
-    p = plot(1:10)
-    annotate!(p, [(7,3,"(7,3)"),(3,7,text("hey", 14, :left, :top, :green))])
-    annotate!(p, [(4, 4, ("More text", 8, 45.0, :bottom, :red))])
-    p
 end
 
 ## ---------------------------------------------------------------------------------
@@ -272,3 +187,57 @@ end;
 
 ## ---------------------------------------------------------------------------------
 # figure 10
+include("1.6_var_study_and_marginals.jl")
+
+let    
+    corr_av_p, corr_va_p = plot_ME_methods_comparizon()
+    pGLC, pAC, pz = plot_me_marginals()
+
+    size0 = (1220, 940)
+    for p in [pGLC, pAC, pz]
+        plot!(p; 
+            titlefont = 26,
+            axisfont = 26,
+            guidefont = 26,
+            xtickfont = 22,
+            ytickfont = 22,
+            legendfont = 22,
+            thickness_scaling = 1.6,
+            size = size0
+        )
+    end
+
+    margs_file = sfig(ChE, [pGLC, pAC, pz],
+        "margs.png";
+        layout = (3, 1)
+    )
+
+    for p in [corr_av_p, corr_va_p]
+        plot!(p; 
+            titlefont = 26,
+            axisfont = 26,
+            guidefont = 26,
+            xtickfont = 22,
+            ytickfont = 22,
+            legendfont = 22,
+            thickness_scaling = 1.6,
+            size = 1.5 .* size0
+        )
+    end
+
+    corrs_file = sfig(ChE, [corr_av_p, corr_va_p],
+        "corrs.png";
+        layout = (2, 1)
+    )
+
+    grid_ = make_grid(
+        lfig.([margs_file, corrs_file]); 
+        layout = (1, 2), 
+        tofill = WHITE_PIX
+    )
+
+    sfig(ChE, grid_,
+        "bias_study.png";
+    )
+
+end;
