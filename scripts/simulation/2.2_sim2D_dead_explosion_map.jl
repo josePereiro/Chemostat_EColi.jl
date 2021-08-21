@@ -28,13 +28,13 @@ function plot_dead_explosion_map()
 
     @info("At", cg)
     p = plot(;
-        title = string("cg: ", round(cg; sigdigits = 3)),
-        xlabel = "D", ylabel = "ϵ"
+        title = _textbf("c_{g}: ", round(cg; sigdigits = 3)),
+        xlabel = _textbf("D"), ylabel = _textbf("\\epsilon")
     )
     for (label, color) = [
-            ("dead", :black),
-            ("steady state", :blue),
-            ("explosion", :yellow),
+            (_textbf("dead"), :black),
+            (_textbf("steady state"), :blue),
+            (_textbf("explosion"), :yellow),
         ]
         scatter!(p, [Ds[end ÷ 2]], [ϵs[end ÷ 2]];
             markerstrokewidth=0.3,

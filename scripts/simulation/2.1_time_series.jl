@@ -3,7 +3,7 @@ function plot_time_series(simid, D, ϵs, cg)
 
    ϵcolors = palette(:thermal, length(ϵs))
 
-   Dstr = string(round(D; sigdigits = 3 ))
+   Dstr = string(round(D; sigdigits = 3))
    tslim = [Inf, -Inf]
 
    Xp = plot()
@@ -13,7 +13,6 @@ function plot_time_series(simid, D, ϵs, cg)
    sglim = [0.0, -Inf]
 
    for (ϵi, ϵ) in enumerate(ϵs)
-      thid = threadid()
       
       status = get_status(simid, (;D, ϵ, cg))
       (status == UNDONE_SIM_STATUS) && continue
@@ -27,19 +26,19 @@ function plot_time_series(simid, D, ϵs, cg)
       tslim = (-5.0, 105.0)
       
       for (p, ys, ylim, ylabel) in [
-         [Xp, Xts, Xlim, "X"],
-         [sgp, sgts, sglim, "sg"]
+         [Xp, Xts, Xlim, _textbf("X")],
+         [sgp, sgts, sglim, _textbf("s_g")]
       ]
          ylim .= lims(ys, ylim)
          plot!(p, ts, ys; 
-            title = string("D=", Dstr),
+            title = _textbf("D=", Dstr),
             xlim = tslim, ylim,
             label = "", 
             ylabel,
             color = ϵcolors[ϵi], 
             zcolor = ϵ,
-            colorbar_title = "ϵ",
-            xlabel = "simulation progress (%)",
+            # colorbar_title = _textbf("\\epsilon"),
+            xlabel = _textbf("simulation progress (\\%)"),
             lw = 3
          )
       end

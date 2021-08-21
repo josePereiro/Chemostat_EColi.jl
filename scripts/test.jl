@@ -1,0 +1,1 @@
+println("Hiiiiiiii from ", VERSION)

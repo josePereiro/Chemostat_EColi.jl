@@ -34,7 +34,10 @@ function plot_inner_plots(METHODS, METHODS_LABELS = string.(METHODS))
         ps = Plots.Plot[]
         for (method_label, method) in zip(METHODS_LABELS, METHODS)
 
-            p = plot(;xlabel = "exp abs. flux", ylabel = "model abs. flux")
+            p = plot(;
+                xlabel = _textbf("exp abs. flux"), 
+                ylabel = _textbf("model abs. flux")
+            )
             
             vals = []
             
@@ -68,9 +71,7 @@ function plot_inner_plots(METHODS, METHODS_LABELS = string.(METHODS))
                         yerr = model_errs,
                         color = ider_colors[iJR_ider], 
                         alpha = 0.8,
-                        marker, 
-                        # xlim = [0.0, 2.3],
-                        # ylim = [0.0, 2.3],
+                        marker,
                     )
 
                 end # for iJR_ider
@@ -82,14 +83,16 @@ function plot_inner_plots(METHODS, METHODS_LABELS = string.(METHODS))
                 ls = :dash, alpha = 0.8, lw = 3, 
                 color = :black,
             )
-
+ 
             # title
             m, M = minimum(vals), maximum(vals)
             x = m + (M - m) * 0.01
             y = M - (M - m) * 0.05
             Dstr = (avD == :tot) ? "all" : round(avD; sigdigits=2)
-            text = string(method_label, "\n", "D=", Dstr)
+            text = _textbf(method_label)
             annotate!(p, [(x, y, (text, 26, :left, :top, :black))])
+            text = _textbf("D=", Dstr)
+            annotate!(p, [(x, y - y * 0.13, (text, 26, :left, :top, :black))])
 
             push!(ps, p)
         

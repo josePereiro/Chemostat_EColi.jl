@@ -9,17 +9,17 @@ function plot_ME_methods_comparizon()
     me_method1 = :ME_MAX_POL
     me_method2 = :ME_Z_EXPECTED_G_BOUNDED
     me_name1 = "ME^2" 
-    me_name2 = "ME^1" 
-
-    # "\$\\textbf{ME}^{\\langle \\textbf{$c} \\rangle}\$"
+    me_name2 = "ME^1"
     
-    corr_av_p0 = plot(;title = "Flux average",
-        xlabel = string("\$", me_name1, "~flux~ave.", "\$",), 
-        ylabel = string("\$", me_name2, "~flux~ave.", "\$",), 
+    corr_av_p0 = plot(;
+        # title = _textbf("Flux average"),
+        xlabel = _textbf(me_name1, " flux ave."), 
+        ylabel = _textbf(me_name2, " flux ave."), 
     )
-    corr_va_p0 = plot(;title = "Flux variance", 
-        xlabel = string("\$", me_name1, "~flux~var.~(log~scale)", "\$",), 
-        ylabel = string("\$", me_name2, "~flux~var.~(log~scale)", "\$",), 
+    corr_va_p0 = plot(;
+        # title = _textbf("Flux variance"), 
+        xlabel = _textbf(me_name1, " flux var. (log scale)"), 
+        ylabel = _textbf(me_name2, " flux var. (log scale)"), 
     )
     corr_av_p, corr_va_p = deepcopy.([corr_av_p0, corr_va_p0])
     corr_ref_params = (;label = "", lw = 3, alpha = 0.8, ls = :dash)
@@ -31,9 +31,7 @@ function plot_ME_methods_comparizon()
         (ChF.iJR904, ChF.FolsomData),
     ]
         src = string(nameof(Data))
-        marker = (5, source_markers[Data])
-
-        corr_lav_p, corr_lva_p = deepcopy.([corr_av_p0, corr_va_p0])
+        marker = (8, source_markers[Data])
 
         # load resume
         DAT = ChE.load_DAT(src)
@@ -41,9 +39,6 @@ function plot_ME_methods_comparizon()
 
         lavs, lvas = [], []
         for exp in EXPS
-
-            # norm
-            exp_glc = abs(DAT[:exp, :flx, "GLC", exp])
 
             ## -------------------------------------------------------------
             # Common iders
@@ -123,8 +118,8 @@ function plot_me_marginals()
     )
     
     labels = Dict(
-        me_method1 => "\$ME^1\$",
-        me_method2 => "\$ME^2\$",
+        me_method1 => "ME^1",
+        me_method2 => "ME^2",
     )
     
     rxns_map = iJR.load_rxns_map()
@@ -141,8 +136,8 @@ function plot_me_marginals()
         model_ider = rxns_map[exp_ider]
 
         p = plot(; 
-            xlabel = exp_ider == "D" ? "z" : exp_ider,
-            ylabel = "norm. pdf"
+            xlabel = _textbf(exp_ider == "D" ? "z" : exp_ider),
+            ylabel = _textbf("norm. pdf")
         )
         avs, vas = [], []
 
@@ -156,7 +151,7 @@ function plot_me_marginals()
 
             ChP.plot_marginal!(p, model, epout, model_ider;
                 color = colors[method], 
-                label = labels[method], 
+                label = _textbf(labels[method]), 
                 xlim,
                 lw = 4,
                 normalize = true

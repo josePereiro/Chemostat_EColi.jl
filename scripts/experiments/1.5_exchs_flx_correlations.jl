@@ -6,7 +6,10 @@ function plot_exch_corrs(METHODS, METHODS_LABELS = string.(METHODS))
 
     for (method_label, method) in zip(METHODS_LABELS, METHODS)
 
-        p = plot(;xlabel = "exp abs. flux", ylabel = "model abs. flux")
+        p = plot(;
+            xlabel = _textbf("exp abs. flux"), 
+            ylabel = _textbf("model abs. flux")
+        )
 
         all_vals = []
 
@@ -52,7 +55,7 @@ function plot_exch_corrs(METHODS, METHODS_LABELS = string.(METHODS))
         m, M = minimum(all_vals), maximum(all_vals)
         x = m + (M - m) * 0.01
         y = M - (M - m) * 0.05
-        annotate!(p, [(x, y, (method_label, 26, :left, :top, :black))])
+        annotate!(p, [(x, y, (_textbf(method_label), 26, :left, :top, :black))])
 
         push!(ps, p)
 

@@ -66,10 +66,11 @@ function _plot_dyn_ug_corrs(simid, Ds, ϵs, cg)
     ϵcolors = palette(:thermal, length(ϵs))
 
     # title = "ME flux av. correlation"
-    me_pz = plot(;xlabel = "Dynamic z", ylabel = "ME z")
-    me_pug = plot(;xlabel = "Dynamic ug", ylabel = "ME ug")
-    lp_mug_pug = plot(;xlabel = "Dynamic ug", ylabel = "FBA min. ug")
-    lp_Mug_pug = plot(;xlabel = "Dynamic ug", ylabel = "FBA max. ug")
+    me_pz = plot(;xlabel = _textbf("Dynamic z"), ylabel = _textbf("ME z"))
+    me_pug = plot(;xlabel = _textbf("Dynamic u_g"), ylabel = _textbf("ME u_g"))
+    lp_mug_pug = plot(;xlabel = _textbf("Dynamic u_g"), ylabel = _textbf("FBA min. u_g"))
+    lp_Mug_pug = plot(;xlabel = _textbf("Dynamic u_g"), ylabel = _textbf("FBA max. u_g"))
+    
     for (p, v1, v2) in [
             (me_pz, dyn_zs, me_zs), 
             (me_pug, dyn_ugs, me_ugs), 
@@ -80,12 +81,12 @@ function _plot_dyn_ug_corrs(simid, Ds, ϵs, cg)
             label = "", 
             color = ϵcolors[coll_ϵis], 
             zcolor = coll_ϵs,
-            colorbar_title = "ϵ", 
+            # colorbar_title = _textbf("\\epsilon"), 
             alpha = 0.8, 
             ms = 8
         )
         all_ = sort!([v1; v2])
-        plot!(p, all_, all_; label = "", ls = :dash, c = :black)
+        plot!(p, all_, all_; label = "", ls = :dash, c = :black, lw = 3)
     end
 
     return [lp_Mug_pug, lp_mug_pug, me_pug]

@@ -1,4 +1,3 @@
-using ColorSchemes: include
 using ProjAssistant
 @quickactivate
 
@@ -14,7 +13,7 @@ using ProjAssistant
       SimD2, run_simD2!, check_stst, hist, 
       n_ave_conv!, tail_ave,
       Container, vec!, Vi, 
-      normalizeP!, 
+      normalizeP!,
       save_simdat, load_simdat, simdat_file,
       set_status, get_status,
       load_batch, save_batch,
@@ -33,8 +32,6 @@ using ProjAssistant
 
 end
 
-Dict(:guidefont=>font, :xtickfont=>font, :ytickfont=>font, :legendfont=>font)
-
 ## ------------------------------------------------------
 function pltparams()
    return (;
@@ -50,7 +47,44 @@ function pltparams()
    )
 end
 
+function _textbf(strs...) 
+   strs = replace.(string.(strs), " " => "~")
+   string("\$\\textbf{", strs..., "}\$")
+end
+
+
 ## ------------------------------------------------------
+# Figure 1: chemostat_scheme
+let
+   
+   spaces = lfig(rawdir(ChE, "chemostat_scheme.png"))
+   sfig(ChE, spaces, 
+      "figure_1", ".png"
+   )
+
+end
+
+## ------------------------------------------------------
+# Figure 2: 2D_spaces_at_stst
+let
+   
+   spaces = lfig(rawdir(ChE, "2D_spaces_at_stst.png"))
+   sfig(ChE, spaces, 
+      "figure_2", ".png"
+   )
+
+end
+
+## ------------------------------------------------------
+# Figure 3: ME_1D_example
+let
+
+   example = lfig(rawdir(ChE, "ME_1D_example.png"))
+   sfig(ChE, example, 
+      "figure_3", ".png"
+   )
+
+end
 
 ## ------------------------------------------------------
 # Figure 4: toy_net_and_time_series
@@ -73,10 +107,10 @@ let
    end
 
    sfig(ChE, [toy_net, Xp, sgp], 
-      @fileid, "toy_net_and_time_serie", ".png"; 
+      "figure_4", ".png"; 
       layout = (1, 3)
    )
-end  
+end
 
 ## ------------------------------------------------------
 # Figure 5
@@ -95,7 +129,7 @@ let
    end
 
    sfig(ChE, [panel1, panel2], 
-      @fileid, "pol_vol_study_and_dead_explosion_map", ".png", 
+      "figure_5", ".png", 
       layout = (1,2)
    )
 
@@ -109,7 +143,7 @@ let
    params = lglob(Dyn, :dyn, :params, :finite_cg)
    @extract params: Ds ϵs cg simid
 
-   ps = plot_flux_marginals(simid, Ds[6], ϵs, cg)
+   ps = plot_flux_marginals(simid, Ds[8], ϵs[1:3:end], cg)
 
    for p in ps
       plot!(p; pltparams()...)
@@ -117,8 +151,8 @@ let
 
    layout = (2, 2)
    ffile = sfig(ChE, ps, 
-       @fileid,  "dyn_me_marginals", ".png";
-       layout
+      "figure_6", ".png";
+      layout
    )
    @info("Done", ffile)
 
@@ -140,7 +174,7 @@ let
    end
    
    sfig(ChE, ps, 
-      @fileid, "dyn_ug_corrs", ".png";
+      "figure_7", ".png";
       layout = (1, 3)
    )
 

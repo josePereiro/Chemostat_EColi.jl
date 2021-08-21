@@ -6,8 +6,8 @@ function plot_Glc_uptake_study()
     methodU = :FBA_Z_FIX_MAX_VG_MIN_COST
     
     p = plot(; 
-        xlabel = "\$ \\textbf{exp. vg} \$", 
-        ylabel = "\$ \\textbf{model. vg} \$", 
+        xlabel = _textbf("exp. u_g"), 
+        ylabel = _textbf("model u_g"), 
     )
 
     all_vals = []
@@ -15,7 +15,6 @@ function plot_Glc_uptake_study()
         (ChK.iJR904, ChK.KayserData), 
         (ChN.iJR904, ChN.NanchenData), 
         (ChF.iJR904, ChF.FolsomData), 
-        # (ChH.iJR904, ChH.HeerdenData), 
     ]
         src = nameof(Data)
         marker = (9, source_markers[Data])

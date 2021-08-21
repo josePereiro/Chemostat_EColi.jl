@@ -5,8 +5,8 @@ function plot_Xexp_Xmax_study()
     methodU = :FBA_Z_FIX_MAX_VG_MIN_COST
     
     p = plot(; 
-        xlabel = "\$ \\textbf{log10(exp. X)} \$", 
-        ylabel = "\$ \\textbf{log10(theo. max. X)} \$"
+        xlabel = _textbf("exp. X (log scale)"), 
+        ylabel = _textbf("theo. max. X (log scale)"), 
     )
 
     all_vals = []
@@ -33,7 +33,8 @@ function plot_Xexp_Xmax_study()
         Xmaxs = log10.(Xmaxs)
 
         scatter!(p, Xexps, Xmaxs; 
-            label = src_name, color = :black,
+            label = _textbf(src_name), 
+            color = :black,
             marker, alpha = 0.8,
         )
         plot!(p; legend = :topleft)

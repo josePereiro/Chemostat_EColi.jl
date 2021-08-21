@@ -69,9 +69,9 @@ function plot_pol_box_size(iJR, Data;
     # vol map
     p = heatmap(Ds, cgD_Xs, box_vols'; 
         label = "", 
-        xlabel = "D (1/ h)", 
-        ylabel = "-cgD/X (mmol/ gCDW h)", 
-        colorbar_title = "polytope volume"
+        xlabel = _textbf("D"), 
+        ylabel = _textbf("-c_g D / X"), 
+        # colorbar_title = _textbf("polytope volume")
     )
 
     # exp vals

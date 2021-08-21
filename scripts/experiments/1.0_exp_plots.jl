@@ -1,4 +1,3 @@
-using ProjAssistant: ImgTools
 using ProjAssistant
 @quickactivate
 
@@ -41,6 +40,7 @@ using ProjAssistant
     using Serialization
     using Statistics
     using Plots
+    using Plots.Measures
 
     import GR
     !isinteractive() && GR.inline("png")
@@ -83,16 +83,21 @@ source_markers = Dict(
 ## ------------------------------------------------------
 function pltparams()
     return (;
-       titlefont = 16,
-       axisfont = 16,
-       guidefont = 16,
-       colorbar_titlefont = 16,
-       xtickfont = 12,
-       ytickfont = 12,
-       legendfont = 12,
-       thickness_scaling = 1.6,
-       size = (1220, 940)
+        titlefont = 16,
+        axisfont = 16,
+        guidefont = 16,
+        colorbar_titlefont = 16,
+        xtickfont = 12,
+        ytickfont = 12,
+        legendfont = 12,
+        thickness_scaling = 1.6,
+        size = (1220, 940)
     )
+end
+
+function _textbf(strs...) 
+    strs = replace.(string.(strs), " " => "~")
+    string("\$\\textbf{", strs..., "}\$")
 end
 
 ## ---------------------------------------------------------------------------------
@@ -103,6 +108,7 @@ include("1.3_Glc_uptake_study.jl")
 
 let
     # panel 1
+    # TODO: Add colorbar_title
     Dlim = [0.01, 0.5]
     cgD_Xlim = [-40.0, 0.0]
     bins = 60
@@ -118,11 +124,21 @@ let
     panel3 = plot_Glc_uptake_study()
 
     for p in [panel1, panel2, panel3]
-        plot!(p; pltparams()...)
+        plot!(p;
+            titlefont = 22,
+            colorbar_titlefont = 22,
+            axisfont = 22,
+            guidefont = 22,
+            xtickfont = 18,
+            ytickfont = 18,
+            legendfont = 18,
+            thickness_scaling = 1.6,
+            size = (1220, 940)
+        )
     end
     
     sfig(ChE, [panel1, panel2, panel3], 
-        @fileid, "exp_space_location", ".png";
+        "figure_8", ".png";
         layout = (1, 3)
     )
 
@@ -178,8 +194,14 @@ let
         plot!(p; params...)
     end
 
+    # add margin
+    for ps in [exch_ps, values(inner_ps)...]
+        plot!(first(ps); leftmargin = 5mm)
+        plot!(last(ps); rightmargin = 7mm)
+    end
+
     sfig(ChE, ps,
-        "flux_corrs_collage", ".png";
+        "figure_9", ".png";
         layout = (7, 5)
     )
 
@@ -230,14 +252,9 @@ let
         layout = (2, 1)
     )
 
-    grid_ = make_grid(
-        lfig.([margs_file, corrs_file]); 
-        layout = (1, 2), 
-        tofill = WHITE_PIX
-    )
-
-    sfig(ChE, grid_,
-        "bias_study.png";
+    sfig(ChE, lfig.([margs_file, corrs_file]),
+        "figure_10", ".png";
+        layout = (1, 2)
     )
 
 end;
