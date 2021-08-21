@@ -14,15 +14,15 @@ let
         DAT = UJL.load_data(datfile; verbose = false)
         
         method = :ME_MAX_POL
-        # FLX_IDERS = DAT[:FLX_IDERS]
-        FLX_IDERS = ["GLC", "AC"]
+        # EXCH_FLX_IDERS = DAT[:EXCH_FLX_IDERS]
+        EXCH_FLX_IDERS = ["GLC", "AC"]
         EXPS = DAT[:EXPS]
         rxns_map = iJR.load_rxns_map()
         
         exglcidx = ChU.rxnindex(model, iJR.EX_GLC_IDER)
         biomidx = ChU.rxnindex(model, iJR.BIOMASS_IDER)
         
-        model_ids = [rxns_map[id] for id in FLX_IDERS]
+        model_ids = [rxns_map[id] for id in EXCH_FLX_IDERS]
         model_idxs = [ChU.rxnindex(model, model_id) for model_id in model_ids]
         
         
@@ -46,7 +46,7 @@ let
         end
         sidxs = sortperm(vols)
 
-        for ider in FLX_IDERS
+        for ider in EXCH_FLX_IDERS
             stds = DAT[method, :err, ider, EXPS]
             color = ider_colors[ider]
             marker = source_markers[Data]
@@ -64,7 +64,7 @@ let
         model = iJR.load_model("max_model")
         vol = box_vol(model, model_idxs) + zeroth
 
-        for ider in FLX_IDERS
+        for ider in EXCH_FLX_IDERS
 
             std = DAT[method, :err, ider]
             marker = source_markers[Data]

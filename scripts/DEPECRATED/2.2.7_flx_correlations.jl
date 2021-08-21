@@ -35,11 +35,11 @@ let
     for method in ALL_METHODS        
         # total corr
         let            
-            ep_vals = DAT[method, :ep, :flx, FLX_IDERS, EXPS] .|> abs
-            ep_errs = DAT[method, :eperr, :flx, FLX_IDERS, EXPS] .|> abs
-            Fd_vals = DAT[method, :Fd, :flx, FLX_IDERS, EXPS] .|> abs
+            ep_vals = DAT[method, :ep, :flx, EXCH_FLX_IDERS, EXPS] .|> abs
+            ep_errs = DAT[method, :eperr, :flx, EXCH_FLX_IDERS, EXPS] .|> abs
+            Fd_vals = DAT[method, :Fd, :flx, EXCH_FLX_IDERS, EXPS] .|> abs
             
-            color = [ider_colors[ider] for ider in FLX_IDERS, exp in EXPS]
+            color = [ider_colors[ider] for ider in EXCH_FLX_IDERS, exp in EXPS]
             scatter_params = (;label = "", color, ms = 7, alpha = 0.7)
             # ep corr
             p = plot(title = "$(iJR.PROJ_IDER) (EP) $method", 
@@ -54,7 +54,7 @@ let
 
         # per ider
         let       
-            for ider in FLX_IDERS
+            for ider in EXCH_FLX_IDERS
                 ep_vals = DAT[method, :ep, :flx, ider, EXPS] .|> abs
                 ep_errs = DAT[method, :eperr, :flx, ider, EXPS] .|> abs
                 Fd_vals = DAT[method, :Fd, :flx, ider, EXPS] .|> abs

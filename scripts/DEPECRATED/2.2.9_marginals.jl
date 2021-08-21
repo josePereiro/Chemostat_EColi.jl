@@ -7,7 +7,7 @@ let
 
     # Iders
     model_iders, Fd_iders = [objider], ["D"]
-    for Fd_met in FLX_IDERS
+    for Fd_met in EXCH_FLX_IDERS
         model_met = Fd_mets_map[Fd_met]
         model_exch = Fd_rxns_map[Fd_met]
         push!(model_iders, model_exch)
@@ -115,7 +115,7 @@ let
 
     # Iders
     model_iders, Fd_iders = [objider], ["D"]
-    for Fd_met in FLX_IDERS
+    for Fd_met in EXCH_FLX_IDERS
         model_met = Fd_mets_map[Fd_met]
         model_exch = Fd_rxns_map[Fd_met]
         push!(model_iders, model_exch)

@@ -69,7 +69,7 @@ function mysavefig(p, pname; params...)
     @info "Plotting" fname
 end
 myminmax(a::Vector) = (minimum(a), maximum(a))
-FLX_IDERS = ["GLC", "PYR", "SUCC", "LAC", "FORM", "AC", "O2", "CO2"]
+EXCH_FLX_IDERS = ["GLC", "PYR", "SUCC", "LAC", "FORM", "AC", "O2", "CO2"]
 
 Fd_rxns_map = iJR.load_rxns_map()
 Fd_mets_map = iJR.load_mets_map()
@@ -87,7 +87,7 @@ exp_colors = let
 end
 
 ider_colors = let
-    iders = [FLX_IDERS; "D"]
+    iders = [EXCH_FLX_IDERS; "D"]
     colors = Plots.distinguishable_colors(length(iders))
     Dict(ider => color for (ider, color) in zip(iders, colors))
 end

@@ -7,23 +7,22 @@ let
 
 
     for (iJR, Data) in [
-            (ChK.iJR904, ChK.KayserData), 
+            # (ChK.iJR904, ChK.KayserData), 
             (ChN.iJR904, ChN.NanchenData), 
-            (ChF.iJR904, ChF.FolsomData), 
+            # (ChF.iJR904, ChF.FolsomData), 
             (ChH.iJR904, ChH.HeerdenData),  
         ]
 
         src = nameof(Data)
 
-        datfile = iJR.procdir("dat.bson")
-        DAT = UJL.load_data(datfile; verbose = false)
-        FLX_IDERS = DAT[:FLX_IDERS]
+        DAT = ChE.load_DAT(src)
+        EXCH_FLX_IDERS = DAT[:EXCH_FLX_IDERS]
         EXPS = DAT[:EXPS]
 
         ps_pool = Dict()
         for exp in EXPS
 
-            for ider in FLX_IDERS
+            for ider in EXCH_FLX_IDERS
 
                 # 2D Projection
                 p = plot(;title = string(src, " exp:", exp), 
@@ -74,11 +73,11 @@ let
 
         # collect 
         for exp in EXPS
-            ps = Plots.Plot[ps_pool[(exp, ider)] for ider in FLX_IDERS]
+            ps = Plots.Plot[ps_pool[(exp, ider)] for ider in EXCH_FLX_IDERS]
             mysavefig(ps, "polytope"; exp, src, me_method, fba_method)
         end
 
-        for ider in FLX_IDERS
+        for ider in EXCH_FLX_IDERS
             ps = Plots.Plot[ps_pool[(exp, ider)] for exp in EXPS]
             mysavefig(ps, "polytope"; ider, src, me_method, fba_method)
         end
@@ -103,6 +102,7 @@ function plot_projection2D!(p, proj; l = 10, spkwargs...)
 end
 
 ## -------------------------------------------------------------------
+# blue polytope
 let
     me_method = :ME_MAX_POL
     # fba_method = :FBA_Z_FIX_MIN_COST
@@ -115,13 +115,12 @@ let
     ]
         src = nameof(Data)
 
-        datfile = iJR.procdir("dat.bson")
-        DAT = UJL.load_data(datfile; verbose = false)
-        FLX_IDERS = DAT[:FLX_IDERS]
+        DAT = ChE.load_DAT(src)
+        EXCH_FLX_IDERS = DAT[:EXCH_FLX_IDERS]
         EXPS = DAT[:EXPS]
 
         
-        for ider in FLX_IDERS
+        for ider in EXCH_FLX_IDERS
             # 2D Projection
             exp = EXPS[1]
             fontsize = 13

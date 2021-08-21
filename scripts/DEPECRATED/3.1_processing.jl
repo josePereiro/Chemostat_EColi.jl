@@ -46,7 +46,7 @@ function mysavefig(p, pname; params...)
     @info "Plotting" fname
 end
 myminmax(a::Vector) = (minimum(a), maximum(a))  
-FLX_IDERS = ["GLC", "PYR", "SUCC", "LAC", "FORM", "AC", "O2", "CO2"]
+EXCH_FLX_IDERS = ["GLC", "PYR", "SUCC", "LAC", "FORM", "AC", "O2", "CO2"]
 
 EXPS = 1:4 # experiments that have both concentration and flx data
 
@@ -56,7 +56,7 @@ exp_colors = let
 end
 
 ider_colors = let
-    iders = [FLX_IDERS; "D"]
+    iders = [EXCH_FLX_IDERS; "D"]
     colors = Plots.distinguishable_colors(length(iders))
     Dict(ider => color for (ider, color) in zip(iders, colors))
 end
@@ -80,8 +80,8 @@ Fd_rxns_map = iJR.load_rxns_map()
 
 ## -----------------------------------------------------------------------------------------------
 # correlations
-DAT = UJL.DictTree()
-DAT[:FLX_IDERS] = FLX_IDERS
+DAT = UJL.MagicDict()
+DAT[:EXCH_FLX_IDERS] = EXCH_FLX_IDERS
 DAT[:EXPS] = EXPS
 
 ## -----------------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ let
     ps = Plots.Plot[]
     for method in ALL_METHODS
         p = plot(;title = string(method), xlabel = "exp flx", ylabel = "model flx")
-        for Fd_ider in FLX_IDERS
+        for Fd_ider in EXCH_FLX_IDERS
             model_ider = Fd_rxns_map[Fd_ider]
             for exp in EXPS
                 color = ider_colors[Fd_ider]
@@ -109,7 +109,7 @@ let
                 )
             end
         end
-        xs = DAT[method, [:Fd, :lp], :flx, FLX_IDERS, EXPS] |> sort
+        xs = DAT[method, [:Fd, :lp], :flx, EXCH_FLX_IDERS, EXPS] |> sort
         plot!(p, xs, xs; label = "", ls = :dash, 
             alpha = 0.9, color = :black, lw = 3
         )

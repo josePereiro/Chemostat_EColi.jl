@@ -1,9 +1,9 @@
 let
     method = ME_MAX_POL
-    niders = length(FLX_IDERS)
+    niders = length(EXCH_FLX_IDERS)
 
     stds = map(EXPS) do exp
-        DAT[method, :eperr, :flx, FLX_IDERS, exp] ./ abs.(DAT[method, :Fd, :flx, "GLC", exp])
+        DAT[method, :eperr, :flx, EXCH_FLX_IDERS, exp] ./ abs.(DAT[method, :Fd, :flx, "GLC", exp])
     end
     
     # sGLC

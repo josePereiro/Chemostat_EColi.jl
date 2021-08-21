@@ -3,7 +3,7 @@
 let
    
     ps = Plots.Plot[]
-    for ider in FLX_IDERS
+    for ider in EXCH_FLX_IDERS
         p = plot(title = ider, xlabel = "replica", ylabel = "flx")
         xticks =  (EXPS, string.(EXPS))
 

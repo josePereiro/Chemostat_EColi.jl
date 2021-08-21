@@ -1,17 +1,16 @@
 ## -------------------------------------------------------------------
 let
+    
     METHODS = [
 
-        FBA_Z_FIX_MAX_VG_MIN_COST, 
-        FBA_Z_FIX_MIN_VG_MIN_COST, 
-        FBA_Z_FIX_MAX_VG_MAX_COST, 
-        FBA_Z_FIX_MIN_VG_MAX_COST,
-        FBA_Z_VG_FIX_MAX_COST, 
-        FBA_Z_VG_FIX_MIN_COST, 
-        FBA_Z_FIX_MAX_COST, 
-        FBA_Z_FIX_MIN_COST, 
-        FBA_MAX_Z_MIN_COST, 
-        FBA_MAX_Z_MAX_COST,
+        :FBA_Z_FIX_MAX_VG_MIN_COST, 
+        :FBA_Z_FIX_MAX_VG_MAX_COST, 
+        :FBA_Z_FIX_MIN_VG_MIN_COST, 
+        :FBA_Z_FIX_MIN_VG_MAX_COST, 
+        :FBA_Z_FIX_ADJ_MAX_VG_MIN_COST, 
+        :FBA_Z_FIX_ADJ_MAX_VG_MAX_COST, 
+        :FBA_Z_FIX_ADJ_MIN_VG_MIN_COST, 
+        :FBA_Z_FIX_ADJ_MIN_VG_MAX_COST, 
 
         ME_MAX_POL,
         ME_Z_EXPECTED_G_BOUNDED, 
@@ -25,6 +24,7 @@ let
         # dpi = 1000
     )
     
+    ps = Plots.Plot[]
     for method in METHODS
         p = plot(; 
             xlabel = "vg", 
@@ -60,6 +60,9 @@ let
 
         plot!(;legend = :bottomright, ylim = [0.0, Inf])
         mysavefig(p, "vg_cost_study"; method)
+        push!(ps, plot!(p; title = string(method)))
     end
+    
+    mysavefig(ps, "vg_cost_study")
 
 end

@@ -30,10 +30,9 @@ let
 
             src = nameof(Data)
 
-            datfile = iJR.procdir("dat.bson")
-            DAT = UJL.load_data(datfile; verbose = false)
+            DAT = ChE.load_DAT(src)
 
-            FLX_IDERS = sort_iders(DAT[:FLX_IDERS])
+            EXCH_FLX_IDERS = sort_iders(DAT[:EXCH_FLX_IDERS])
             EXPS = DAT[:EXPS]
             
             @info("Doing", src)
@@ -44,7 +43,7 @@ let
                 !haskey(DAT, :exp, :flx, "GLC", exp) && continue
                 glc_exp_val = DAT[:exp, :flx, "GLC", exp]
                 
-                for ider in FLX_IDERS
+                for ider in EXCH_FLX_IDERS
                     exp_val = abs(DAT[:exp, :flx, ider, exp] / glc_exp_val)
 
                     @info(:exp, exp, ider, exp_val); println()
@@ -62,7 +61,7 @@ let
                     !haskey(DAT, :exp, :flx, "GLC", exp) && continue
                     glc_exp_val = DAT[:exp, :flx, "GLC", exp]
 
-                    for ider in FLX_IDERS
+                    for ider in EXCH_FLX_IDERS
                         !haskey(DAT, method, :flx, ider, exp) && continue
                         model_val = abs(DAT[method, :flx, ider, exp] / glc_exp_val)
                         

@@ -16,21 +16,21 @@ let
 
         METHODS = [:FBA_Z_FIX_MIN_COST, :ME_MAX_POL]
         EXPS = DAT[:EXPS]
-        FLX_IDERS = iJR.load_krebs_iders()
+        EXCH_FLX_IDERS = iJR.load_krebs_iders()
 
         for exp in EXPS
             p = plot(;xlabel = "flx ider", ylabel = "flx val / exp glcex")
             glc_exp_val = abs(DAT[:exp, :flx, "GLC", exp])
 
             for method in METHODS
-                model_vals = abs.(DAT[method, :flx, FLX_IDERS, exp]) ./ glc_exp_val
+                model_vals = abs.(DAT[method, :flx, EXCH_FLX_IDERS, exp]) ./ glc_exp_val
 
                 color = method_colors[method]
-                scatter!(p, FLX_IDERS, model_vals; 
+                scatter!(p, EXCH_FLX_IDERS, model_vals; 
                     color, label = string(method), 
                     m = 8
                 )
-                plot!(p, FLX_IDERS, model_vals; label = "",
+                plot!(p, EXCH_FLX_IDERS, model_vals; label = "",
                     color, ls = :dash, alpha = 0.5, lw = 3
                 )
             end
@@ -48,7 +48,7 @@ let
 
     fba_method = :FBA_Z_FIX_MIN_COST
     me_method = :ME_MAX_POL
-    FLX_IDERS = KiJR.krebs_iders
+    EXCH_FLX_IDERS = KiJR.krebs_iders
 
     for (iJR, Data) in [
         (ChK.iJR904, ChK.KayserData), 
@@ -59,7 +59,7 @@ let
         me_avs, me_stds = [], []
         fba_avs, fba_stds = [], []
         src = nameof(Data)
-        for ider in FLX_IDERS
+        for ider in EXCH_FLX_IDERS
 
             datfile = iJR.procdir("dat.bson")
             DAT = UJL.load_data(datfile; verbose = false)
@@ -82,7 +82,7 @@ let
             color = method_colors[method]
             lb, ub = avs .- stds, avs .+ stds
             lb, ub = avs .- stds, avs .+ stds
-            scatter!(p, FLX_IDERS, [avs avs]; label = "", 
+            scatter!(p, EXCH_FLX_IDERS, [avs avs]; label = "", 
                 fillrange = [lb ub], fillalpha = 0.2, color,
                 markeralpha = 0.0
             )
@@ -94,10 +94,10 @@ let
             (fba_avs, fba_method),
         ]
             color = method_colors[method]
-            scatter!(p, FLX_IDERS, avs; label = string(method), 
+            scatter!(p, EXCH_FLX_IDERS, avs; label = string(method), 
                 color, marker
             )
-            plot!(p, FLX_IDERS, avs; label = "", 
+            plot!(p, EXCH_FLX_IDERS, avs; label = "", 
                 color, lw = 1, alpha = 0.3, ls = :dash
             )
         end

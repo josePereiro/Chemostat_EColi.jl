@@ -10,7 +10,7 @@ let
     fba_label = "\$ \\textbf{FBA} \\textbf{ (abs. flux)} \$"
 
     for (get_flxs, flxs) in [
-        ((DAT) -> DAT[:FLX_IDERS], "all"),
+        ((DAT) -> DAT[:EXCH_FLX_IDERS], "all"),
         ((DAT) -> ["GLC", "AC"], "common"),
     ]
         
@@ -35,21 +35,21 @@ let
             datfile = iJR.procdir("dat.bson")
             DAT = UJL.load_data(datfile; verbose = false)
 
-            # FLX_IDERS = DAT[:FLX_IDERS]
-            # FLX_IDERS = ["GLC", "AC"]
-            FLX_IDERS = get_flxs(DAT)
+            # EXCH_FLX_IDERS = DAT[:EXCH_FLX_IDERS]
+            # EXCH_FLX_IDERS = ["GLC", "AC"]
+            EXCH_FLX_IDERS = get_flxs(DAT)
             EXPS = DAT[:EXPS]
 
             tot_ps = Plots.Plot[]
 
             # total corr
             let            
-                ep_vals = DAT[me_method, :flx, FLX_IDERS, EXPS] .|> abs
-                ep_errs = DAT[me_method, :err, FLX_IDERS, EXPS] .|> abs
+                ep_vals = DAT[me_method, :flx, EXCH_FLX_IDERS, EXPS] .|> abs
+                ep_errs = DAT[me_method, :err, EXCH_FLX_IDERS, EXPS] .|> abs
 
-                fba_vals = DAT[fba_method, :flx, FLX_IDERS, EXPS] .|> abs
+                fba_vals = DAT[fba_method, :flx, EXCH_FLX_IDERS, EXPS] .|> abs
                 
-                color = [ider_colors[ider] for ider in FLX_IDERS, exp in EXPS]
+                color = [ider_colors[ider] for ider in EXCH_FLX_IDERS, exp in EXPS]
                 
                 # ep corr
                 scatter!(p, fba_vals, ep_vals; yerr = ep_errs, 

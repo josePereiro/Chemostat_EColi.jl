@@ -12,8 +12,7 @@ function do_exp_plot(id1, id2)
         # unit1 = Data.unit(id1)
         # unit2 = Data.unit(id2)
 
-        datfile = iJR.procdir("dat.bson")
-        DAT = UJL.load_data(datfile; verbose = false)
+        DAT = ChE.load_DAT(src)
         EXPS = DAT[:EXPS]
         
         local_p = plot(;
@@ -29,7 +28,7 @@ function do_exp_plot(id1, id2)
 
         marker = (8, source_markers[Data])
         for p in [local_p, tot_p]
-            scatter!(p, xs, ys; 
+            scatter!(p, xs, log.(ys); 
                 label = "", marker, 
                 alpha = 0.8, color = :black
             )
@@ -49,7 +48,7 @@ end
 ## ---------------------------------------------------------------------------
 let
     # ids = [:sGLC, :sAC, :D, :X, :uGLC, :uAC]
-    ids = [:D, :sGLC]
+    ids = [:D, :X]
     for i in 1:length(ids)
         for j in (i + 1):length(ids)
             do_exp_plot(ids[i], ids[j])
@@ -61,7 +60,7 @@ end
 let
     fontsize = 13
     commom_params = (; 
-        dpi = 1000,
+        # dpi = 1000,
         thickness_scaling = 1.3, 
         xguidefontsize = fontsize, yguidefontsize = fontsize, 
         ylim = [0.0, Inf]
@@ -69,10 +68,10 @@ let
 
     tot_p = nothing
     for (iJR, Data) in [
-        # (ChK.iJR904, ChK.KayserData), 
-        # (ChF.iJR904, ChF.FolsomData), 
-        # (ChN.iJR904, ChN.NanchenData), 
-        (ChH.iJR904, ChH.HeerdenData), 
+        (ChK.iJR904, ChK.KayserData), 
+        (ChF.iJR904, ChF.FolsomData), 
+        (ChN.iJR904, ChN.NanchenData), 
+        # (ChH.iJR904, ChH.HeerdenData), 
     ]
 
         src = nameof(Data)

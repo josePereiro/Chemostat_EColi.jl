@@ -5,7 +5,7 @@ let
     ps_pool = Dict()
     for exp in EXPS
 
-        for Fd_ider in FLX_IDERS
+        for Fd_ider in EXCH_FLX_IDERS
 
             # 2D Projection
             p = plot(;title = string("Folsom2014 exp:", exp), 
@@ -50,11 +50,11 @@ let
 
     # collect 
     for exp in EXPS
-        ps = Plots.Plot[ps_pool[(exp, Fd_ider)] for Fd_ider in FLX_IDERS]
+        ps = Plots.Plot[ps_pool[(exp, Fd_ider)] for Fd_ider in EXCH_FLX_IDERS]
         mysavefig(ps, "polytope"; exp, method)
     end
 
-    for Fd_ider in FLX_IDERS
+    for Fd_ider in EXCH_FLX_IDERS
         ps = Plots.Plot[ps_pool[(exp, Fd_ider)] for exp in EXPS]
         mysavefig(ps, "polytope"; Fd_ider, method)
     end

@@ -3,10 +3,13 @@ MEname(c) = "\$\\textbf{ME}^{\\langle \\textbf{$c} \\rangle}\$"
 ## ----------------------------------------------------------------------------
 # legend
 let
+    me_name1 = "\$MEP^2\$" #MEname(1)
+    me_name2 = "\$MEP^1\$" #MEname(0)
+
     p = plot()
     params = (;lw = 15, legendfont = 15, legendlinewidth = 15, dpi=1000)
-    plot!(p, fill(2, 10); label = MEname(0), color = :blue, params...)
-    plot!(p, fill(4, 10); label = MEname(1), color = :red, params...)
+    plot!(p, fill(2, 10); label = me_name2, color = :blue, params...)
+    plot!(p, fill(4, 10); label = me_name1, color = :red, params...)
     plot!(p, fill(6, 10); label = "", alpha = 0.0)
     mysavefig(p, "ME_legend")
 end
@@ -19,14 +22,16 @@ let
     me_method2 = ME_Z_EXPECTED_G_BOUNDED
     me_name1 = "on_PX"
     me_name2 = "on_V"
-    me_name1 = MEname(1)
-    me_name2 = MEname(0)
+    me_name1 = "\$MEP^2\$" #MEname(1)
+    me_name2 = "\$MEP^1\$" #MEname(0)
 
-    common_params = (;thickness_scaling = 1.3, dpi=1000)
+    common_params = (;thickness_scaling = 1.3, 
+        # dpi=1000
+    )
     
     diff_th = 0.2
     diff_va_p0 = plot(; title = "Flux variance", 
-    xlabel = "exp", ylabel = "biased flux fraction", common_params...
+        xlabel = "exp", ylabel = "biased flux fraction", common_params...
     )
     diff_va_p = deepcopy(diff_va_p0)
     
@@ -49,15 +54,14 @@ let
         (ChF.iJR904, ChF.FolsomData),
         # (ChH.iJR904, ChH.HeerdenData),
     ]
-        src = nameof(Data)
+        src = string(nameof(Data))
         marker = (5, source_markers[Data])
 
         corr_lav_p, corr_lva_p = deepcopy.([corr_av_p0, corr_va_p0])
         diff_lav_p =  deepcopy(diff_va_p0)
 
         # load resume
-        datfile = iJR.procdir("dat.bson")
-        DAT = UJL.load_data(datfile; verbose = false)
+        DAT = ChE.load_DAT(src)
         EXPS = DAT[:EXPS]
 
         lavs, lvas = [], []
@@ -165,16 +169,16 @@ let
     common_params = (;
         thickness_scaling = 1.6, 
         xguidefontsize = fontsize, yguidefontsize = fontsize,
-        dpi = 1000
+        # dpi = 1000
     )
 
-    _method_pair(method; kwargs...) = method => UJL.mysavename(
+    _method_pair(iJR, method; kwargs...) = method => UJL.mysavename(
         DAT_FILE_PREFFIX, "jls"; method, kwargs...
     ) 
 
-    datnames(exp) = Dict(
-        _method_pair(me_method1; exp),
-        _method_pair(me_method2; exp),
+    datnames(iJR, exp) = Dict(
+        _method_pair(iJR, me_method1; exp),
+        _method_pair(iJR, me_method2; exp),
         # _method_pair(me_method3),
     )
     allfound = false
@@ -185,21 +189,22 @@ let
         me_method3 => :black,
     )
 
-    for (iJR, Data) in [
-        # (ChK.iJR904, ChK.KayserData),
-        (ChN.iJR904, ChN.NanchenData), 
-        # (ChF.iJR904, ChF.FolsomData),
-        # (ChH.iJR904, ChH.HeerdenData),
+    for (iJR, Data, EXPS) in [
+        (ChK.iJR904, ChK.KayserData, 5:5),
+        (ChN.iJR904, ChN.NanchenData, 4:4), 
+        (ChF.iJR904, ChF.FolsomData, 1:1),
+        (ChH.iJR904, ChH.HeerdenData, 4:4),
     ]
 
         src = nameof(Data)
         rxns_map = iJR.load_rxns_map()
+        rxns_map["cost"] = iJR.COST_IDER
 
-        for exp in 9:9
+        for exp in EXPS
             @info("Doing", src, exp)
 
             ps = Plots.Plot[]
-            for exp_ider in [Data.msd_mets; "D"]
+            for exp_ider in [Data.msd_mets; "D"; "cost"]
                 model_ider = rxns_map[exp_ider]
 
                 units = exp_ider == "D" ? "1/ h" : "mmol/ gCDW h"
@@ -209,7 +214,7 @@ let
                     ylabel = "norm. pdf"
                 )
                 avs, vas = [], []
-                for (method, datname) in datnames(exp)
+                for (method, datname) in datnames(iJR, exp)
                     datfile = iJR.procdir(datname)
                     allfound = isfile(datfile)
                     !allfound && break
@@ -227,7 +232,7 @@ let
 
                     av = ChU.av(model, epout, model_ider)
                     va = ChU.va(model, epout, model_ider)
-                    push!(avs, av); push!(vas, va)
+                    push!(avs, av); push!(vas, va) 
                 end
                 !allfound && break
 
@@ -238,7 +243,7 @@ let
 
                 plot!(p; xlim, xticks)
                 push!(ps, p)
-                mysavefig(p, "exchange_marginals"; src, exp, exp_ider)
+                # mysavefig(p, "exchange_marginals"; src, exp, exp_ider)
             end
             (isempty(ps) || !allfound) && continue
             mysavefig(ps, "exchange_marginals"; src, exp)

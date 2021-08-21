@@ -1,6 +1,6 @@
 ## -------------------------------------------------------------------
 # Collect
-DAT = ChU.DictTree()
+DAT = ChU.MagicDict()
 let 
     
     DATfile = joinpath(iJR.MODEL_PROCESSED_DATA_DIR, "2.1_DAT.jls")
@@ -12,7 +12,7 @@ let
     end
 
     objider = iJR.BIOMASS_IDER
-    DAT[:FLX_IDERS] = FLX_IDERS
+    DAT[:EXCH_FLX_IDERS] = EXCH_FLX_IDERS
     DAT[:EXPS] = []
 
     # Find exps
@@ -65,7 +65,7 @@ let
         DAT[method, :bounds, :flx, objider, exp] = (lb, ub)
         
         # fluxes
-        for Fd_met in FLX_IDERS
+        for Fd_met in EXCH_FLX_IDERS
 
                 model_met = Fd_mets_map[Fd_met]
                 model_exch = Fd_rxns_map[Fd_met]

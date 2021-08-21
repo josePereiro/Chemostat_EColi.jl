@@ -13,7 +13,7 @@
 #         datfile = iJR.procdir("dat.bson")
 #         DAT = UJL.load_data(datfile; verbose = false)
 
-#         FLX_IDERS = DAT[:FLX_IDERS]
+#         EXCH_FLX_IDERS = DAT[:EXCH_FLX_IDERS]
 #         EXPS = DAT[:EXPS]
 
 #         p = plot(;xlabel = "experiment", ylabel = "MSE")
@@ -24,7 +24,7 @@
 #                 sum = 0.0
 #                 N = 0
 #                 glc_flx = DAT[:exp, :flx, "GLC", exp]
-#                 for ider in FLX_IDERS
+#                 for ider in EXCH_FLX_IDERS
 #                     model_val = DAT[method, :flx, ider, exp]
 #                     exp_val = DAT[:exp, :flx, ider, exp]
 #                     sum += (model_val/glc_flx - exp_val/glc_flx)^2
@@ -66,14 +66,14 @@ let
         datfile = iJR.procdir("dat.bson")
         DAT = UJL.load_data(datfile; verbose = false)
         
-        FLX_IDERS = ["GLC", "AC"]
+        EXCH_FLX_IDERS = ["GLC", "AC"]
         EXPS = DAT[:EXPS]
         rxns_map = iJR.load_rxns_map()
         
         exglcidx = ChU.rxnindex(model, iJR.EX_GLC_IDER)
         biomidx = ChU.rxnindex(model, iJR.BIOMASS_IDER)
         
-        model_ids = [rxns_map[id] for id in FLX_IDERS]
+        model_ids = [rxns_map[id] for id in EXCH_FLX_IDERS]
         model_idxs = [ChU.rxnindex(model, model_id) for model_id in model_ids]
         
         
@@ -99,12 +99,12 @@ let
 
             # MSE
             exp_glc = DAT[:exp, :flx, "GLC", exp]
-            exp_flxs = DAT[:exp, :flx, FLX_IDERS, exp] 
+            exp_flxs = DAT[:exp, :flx, EXCH_FLX_IDERS, exp] 
 
             # ME
-            me_flxs = DAT[me_method, :flx, FLX_IDERS, exp]
+            me_flxs = DAT[me_method, :flx, EXCH_FLX_IDERS, exp]
             MSEsum = sum(((exp_flxs ./ exp_glc) .- (me_flxs ./ exp_glc)).^2)
-            MSE = MSEsum / length(FLX_IDERS)
+            MSE = MSEsum / length(EXCH_FLX_IDERS)
             push!(me_MSEs, MSE)
 
             any(MSE .> 0.3) && let
@@ -112,9 +112,9 @@ let
             end
             
             # FBA
-            fba_flxs = DAT[fba_method, :flx, FLX_IDERS, exp]
+            fba_flxs = DAT[fba_method, :flx, EXCH_FLX_IDERS, exp]
             MSEsum = sum(((exp_flxs ./ exp_glc) .- (fba_flxs ./ exp_glc)).^2)
-            MSE = MSEsum / length(FLX_IDERS)
+            MSE = MSEsum / length(EXCH_FLX_IDERS)
             push!(fba_MSEs, MSE)
             
         end
@@ -219,7 +219,7 @@ end
 #     for method in ALL_METHODS
 #         MSEs = []
 
-#         for ider in FLX_IDERS
+#         for ider in EXCH_FLX_IDERS
 #             sum = 0.0
 #             N = 0
 #             for exp in EXPS
@@ -232,11 +232,11 @@ end
 #             push!(MSEs, sum / N)
 #         end
 
-#         scatter!(p, FLX_IDERS, MSEs; color = method_colors[method],
+#         scatter!(p, EXCH_FLX_IDERS, MSEs; color = method_colors[method],
 #             label = string(method), m = 8, alpha = 0.8, 
 #             legend = :topleft
 #         )
-#         plot!(p, FLX_IDERS, MSEs; color = method_colors[method],
+#         plot!(p, EXCH_FLX_IDERS, MSEs; color = method_colors[method],
 #             label = "", ls = :dash, alpha = 0.8
 #         )
 #     end
@@ -269,7 +269,7 @@ end
 #             N = 0
 
 #             glc_flx = Fd.uval(:GLC, exp)
-#             for ider in FLX_IDERS
+#             for ider in EXCH_FLX_IDERS
 
 #                 model_met = Fd_mets_map[ider]
 #                 model_exch = Fd_rxns_map[ider]
