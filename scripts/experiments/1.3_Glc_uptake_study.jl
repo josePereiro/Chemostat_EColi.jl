@@ -50,9 +50,9 @@ function plot_Glc_uptake_study()
         alpha = 0.7, color = :black
     )
     plot!(;legend = :bottomright)
-    sfig(ChE, p, 
-        "glc_uptake_study", ".png"
-    )
+    # sfig(ChE, p, 
+    #     "glc_uptake_study", ".png"
+    # )
 
     p
 end 

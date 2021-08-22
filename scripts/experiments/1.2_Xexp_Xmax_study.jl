@@ -48,9 +48,9 @@ function plot_Xexp_Xmax_study()
         alpha = 0.7, color = :black
     )
     plot!(;legend = :bottomright)
-    sfig(ChE, p, 
-        "Xexp_Xmax_study", ".png"
-    )
+    # sfig(ChE, p, 
+    #     "Xexp_Xmax_study", ".png"
+    # )
 
     return p
 end 

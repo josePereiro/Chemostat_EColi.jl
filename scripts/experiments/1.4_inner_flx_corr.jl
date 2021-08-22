@@ -98,10 +98,10 @@ function plot_inner_plots(METHODS, METHODS_LABELS = string.(METHODS))
         
         end # for (method_label
 
-        sfig(ChE, ps, 
-            @fileid, "inner_flx_corr", (;avD), ".png", 
-            layout = (1, length(ps))
-        )
+        # sfig(ChE, ps, 
+        #     @fileid, "inner_flx_corr", (;avD), ".png", 
+        #     layout = (1, length(ps))
+        # )
 
         int_ps[avD] = ps
     end

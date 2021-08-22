@@ -61,10 +61,10 @@ function plot_exch_corrs(METHODS, METHODS_LABELS = string.(METHODS))
 
     end # for (method_label, method)
 
-    sfig(ChE, ps, 
-        "exchs_corr", ".png", 
-        layout = (1, length(ps)), 
-    )
+    # sfig(ChE, ps, 
+    #     "exchs_corr", ".png", 
+    #     layout = (1, length(ps)), 
+    # )
 
     return ps
 end 

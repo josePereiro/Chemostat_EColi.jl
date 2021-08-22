@@ -65,7 +65,6 @@ function _plot_dyn_ug_corrs(simid, Ds, ϵs, cg)
 
     ϵcolors = palette(:thermal, length(ϵs))
 
-    # title = "ME flux av. correlation"
     me_pz = plot(;xlabel = _textbf("Dynamic z"), ylabel = _textbf("ME z"))
     me_pug = plot(;xlabel = _textbf("Dynamic u_g"), ylabel = _textbf("ME u_g"))
     lp_mug_pug = plot(;xlabel = _textbf("Dynamic u_g"), ylabel = _textbf("FBA min. u_g"))

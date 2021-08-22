@@ -46,9 +46,9 @@ function plot_dead_explosion_map()
         colorbar = false,
         label = "", 
     )
-    sfig(ChE, p, 
-        simid, "D_ϵ_heatmap", (;cg), ".png"
-    )
+    # sfig(ChE, p, 
+    #     simid, "D_ϵ_heatmap", (;cg), ".png"
+    # )
 
     return p
 end    

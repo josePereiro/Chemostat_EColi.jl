@@ -92,10 +92,10 @@ function plot_ME_methods_comparizon()
     plot!(corr_av_p, avs, avs; corr_ref_params...)
     plot!(corr_va_p, log.(vas), log.(vas); corr_ref_params...)
     
-    sfig(ChE, [corr_av_p, corr_va_p], 
-        @fileid, "corrs_me_max_vs_bounded", ".png", 
-        layout = (1, 2)
-    )
+    # sfig(ChE, [corr_av_p, corr_va_p], 
+    #     @fileid, "corrs_me_max_vs_bounded", ".png", 
+    #     layout = (1, 2)
+    # )
     
     return corr_av_p, corr_va_p
 end 
@@ -164,10 +164,10 @@ function plot_me_marginals()
         push!(ps, p)
 
     end # for exp_ider
-    sfig(ChE, ps, 
-        @fileid, "exchange_marginals", (;src, exp), ".png", 
-        layout = (3, 1)
-    )
+    # sfig(ChE, ps, 
+    #     @fileid, "exchange_marginals", (;src, exp), ".png", 
+    #     layout = (3, 1)
+    # )
 
     return ps
 
