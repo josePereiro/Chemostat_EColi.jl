@@ -1,1 +1,1 @@
-println("Hiiiiiiii from ", VERSION)
+println("Hiiiiiiii from julia ", VERSION)
