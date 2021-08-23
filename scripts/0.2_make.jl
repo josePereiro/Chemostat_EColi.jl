@@ -98,7 +98,7 @@ end
 let
     paths = readdir(PROJ_ROOT)
     for proj in [
-            "MaxEnt_EColi_paper", 
+            # "MaxEnt_EColi_paper", # TODO
             "Chemostat_EColi", 
             "Chemostat_Kayser2005", 
             "Chemostat_Nanchen2006", 
@@ -156,51 +156,51 @@ let
     run_script(ChE, ["experiments"], "1.0_exp_plots.jl")
 end
 
-## ------------------------------------------------------
-# run latex
-let
-    tex_proj = joinpath(PROJ_ROOT, "MaxEnt_EColi_paper")
-    teximgs_dir = joinpath(tex_proj, "images")
-    !isdir(teximgs_dir) && error("image dir not found, path: ", imgs_dir)
+# ## ------------------------------------------------------
+# # run latex
+# let
+#     tex_proj = joinpath(PROJ_ROOT, "MaxEnt_EColi_paper")
+#     teximgs_dir = joinpath(tex_proj, "images")
+#     !isdir(teximgs_dir) && error("image dir not found, path: ", imgs_dir)
 
-    # cp to image dir
-    _info("Copying figures"; teximgs_dir)
-    for figi in 1:10
-        imgname = string("figure_", figi, ".png")
-        srcfile = plotsdir(ChE, imgname)
-        !isfile(srcfile) && error("image file is missing, file: ", srcfile)
-        destfile = joinpath(teximgs_dir, imgname)
-        cp(srcfile, destfile; force = true)
-        @info("Copied figure file", srcfile, destfile)
-    end
+#     # cp to image dir
+#     _info("Copying figures"; teximgs_dir)
+#     for figi in 1:10
+#         imgname = string("figure_", figi, ".png")
+#         srcfile = plotsdir(ChE, imgname)
+#         !isfile(srcfile) && error("image file is missing, file: ", srcfile)
+#         destfile = joinpath(teximgs_dir, imgname)
+#         cp(srcfile, destfile; force = true)
+#         @info("Copied figure file", srcfile, destfile)
+#     end
 
-    # try to run pdflatex
-    _info("Trying pdflatex"; tex_proj)
-    tex_mainfile = joinpath(tex_proj, "MaxEnt_EColi.tex")
-    !isfile(tex_mainfile) && error("main tex file not found, file: ", tex_mainfile)
-    pdflatex_cmd = Cmd(
-        [PDFLATEX_CMD, "-synctex=1", "-interaction=nonstopmode", "-file-line-error", "-recorder", 
-        string("-output-directory=", tex_proj), tex_mainfile]
-    )
-    bibtex_cmd = Cmd(`$(BIBTEX_CMD)  "MaxEnt_EColi"`)
+#     # try to run pdflatex
+#     _info("Trying pdflatex"; tex_proj)
+#     tex_mainfile = joinpath(tex_proj, "MaxEnt_EColi.tex")
+#     !isfile(tex_mainfile) && error("main tex file not found, file: ", tex_mainfile)
+#     pdflatex_cmd = Cmd(
+#         [PDFLATEX_CMD, "-synctex=1", "-interaction=nonstopmode", "-file-line-error", "-recorder", 
+#         string("-output-directory=", tex_proj), tex_mainfile]
+#     )
+#     bibtex_cmd = Cmd(`$(BIBTEX_CMD)  "MaxEnt_EColi"`)
     
-    try; 
-        cd(tex_proj)
+#     try; 
+#         cd(tex_proj)
         
-        # from vscode recipe
-        run(pdflatex_cmd; wait = true)
-        run(bibtex_cmd; wait = true)
-        run(pdflatex_cmd; wait = true)
-        run(bibtex_cmd; wait = true)
-        run(pdflatex_cmd; wait = true)
+#         # from vscode recipe
+#         run(pdflatex_cmd; wait = true)
+#         run(bibtex_cmd; wait = true)
+#         run(pdflatex_cmd; wait = true)
+#         run(bibtex_cmd; wait = true)
+#         run(pdflatex_cmd; wait = true)
 
-        catch err
-            @info("pdflatex/bibtex failed, but the tex project is updated. You must compile it manually. ", tex_proj)
-            rethrow(err)
-        finally; cd(projdir(ChE))
-    end
+#         catch err
+#             @info("pdflatex/bibtex failed, but the tex project is updated. You must compile it manually. ", tex_proj)
+#             rethrow(err)
+#         finally; cd(projdir(ChE))
+#     end
 
-end
+# end
 
 _info("The end")
 exit()
