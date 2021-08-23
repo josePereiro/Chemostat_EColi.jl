@@ -53,19 +53,19 @@ set = ArgParseSettings()
     "--julia-cmd"
         help = "the juila command to use"   
         default = Base.julia_exename()
-        type=String
+        arg_type=String
     "--pdflatex-cmd"
         help = "the pdflatex command to use"   
         default = "pdflatex"
-        type=String
+        arg_type=String
     "--bibtex-cmd"
         help = "the bibtex command to use"   
         default = "bibtex"
-        type=String
+        arg_type=String
     "--nthrs", "-t"
         help = "the juila command to use"   
         default = max(Sys.CPU_THREADS - 1, 1)
-        type=Int
+        arg_type=Int
 end
 
 if isinteractive()
