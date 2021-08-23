@@ -25,7 +25,7 @@ julia --startup-file=no scripts/0.1_install.jl
 To reproduce the results (`WARNING`: this ~ 2 days in a 4 cpu 2019 MacBook Air), run the follow in the `Chemostat_EColi` folder:
 
 ```bash
-julia --startup-file=no scripts/0.1_make.jl
+julia --startup-file=no scripts/0.2_make.jl
 ```
 
 If `bibtex` and `pdflatex` are install and in the `PATH` the make script should reproduce all the figures (at `Chemostat_EColi/plots`) and produce the `.pdf` at `MaxEnt_EColi_paper/MaxEnt_EColi.pdf`.
