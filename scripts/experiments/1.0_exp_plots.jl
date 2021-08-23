@@ -42,6 +42,8 @@ using ProjAssistant
     using Plots
     using Plots.Measures
 
+    using LaTeXStrings
+
     import GR
     !isinteractive() && GR.inline("png")
     
@@ -95,9 +97,9 @@ function pltparams()
     )
 end
 
-function _textbf(strs...) 
-    strs = replace.(string.(strs), " " => "~")
-    string("\$\\textbf{", strs..., "}\$")
+function _textbf(strs...)
+   strs = replace.(string.(strs), " " => "~")
+   latexstring(string("\\mathbf{", strs..., "}"))
 end
 
 ## ---------------------------------------------------------------------------------
@@ -125,15 +127,9 @@ let
 
     for p in [panel1, panel2, panel3]
         plot!(p;
-            titlefont = 22,
-            colorbar_titlefont = 22,
-            axisfont = 22,
-            guidefont = 22,
-            xtickfont = 18,
-            ytickfont = 18,
-            legendfont = 18,
-            thickness_scaling = 1.6,
-            size = (1220, 940)
+            guidefont = 14,
+            thickness_scaling = 2.3,
+            size = (1320, 940)
         )
     end
     
@@ -220,10 +216,10 @@ let
         plot!(p; 
             titlefont = 26,
             axisfont = 26,
-            guidefont = 26,
             xtickfont = 22,
             ytickfont = 22,
             legendfont = 22,
+            guidefont = 26,
             thickness_scaling = 1.6,
             size = size0
         )
@@ -256,5 +252,7 @@ let
         "figure_10", ".png";
         layout = (1, 2)
     )
+
+    rm.([margs_file, corrs_file]; force = true)
 
 end;

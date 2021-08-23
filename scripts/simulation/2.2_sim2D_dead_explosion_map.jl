@@ -28,24 +28,31 @@ function plot_dead_explosion_map()
 
     @info("At", cg)
     p = plot(;
-        title = _textbf("c_{g}: ", round(cg; sigdigits = 3)),
-        xlabel = _textbf("D"), ylabel = _textbf("\\epsilon")
+        title = _textbf("c_{g}=Inf"),
+        xlabel = _textbf("D"), 
+        ylabel = _textbf("\\epsilon")
     )
-    for (label, color) = [
-            (_textbf("dead"), :black),
-            (_textbf("steady state"), :blue),
-            (_textbf("explosion"), :yellow),
+    # labels
+    for (label, color, islast) = [
+            (_textbf("dead"), :black, false),
+            (_textbf("steady state"), :blue, false),
+            (_textbf("explosion"), :yellow, true),
         ]
         scatter!(p, [Ds[end ÷ 2]], [ϵs[end ÷ 2]];
             markerstrokewidth=0.3,
             label, color, m = :square
         )
+        # fake label for spacing
+        # !islast && scatter!(p, [Ds[end ÷ 2]], [ϵs[end ÷ 2]]; label = _textbf(" "), alpha = 0.0)
     end
+
+    # map
     heatmap!(p, Ds, ϵs, mat'; 
         color = colGRAD,
         colorbar = false,
         label = "", 
     )
+    
     # sfig(ChE, p, 
     #     simid, "D_ϵ_heatmap", (;cg), ".png"
     # )

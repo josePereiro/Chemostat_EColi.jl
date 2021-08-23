@@ -29,6 +29,7 @@ using ProjAssistant
    using ProgressMeter
    using BenchmarkTools
    using ColorSchemes
+   using LaTeXStrings
 
 end
 
@@ -47,11 +48,11 @@ function pltparams()
    )
 end
 
-function _textbf(strs...) 
+## ------------------------------------------------------
+function _textbf(strs...)
    strs = replace.(string.(strs), " " => "~")
-   string("\$\\textbf{", strs..., "}\$")
+   latexstring(string("\\mathbf{", strs..., "}"))
 end
-
 
 ## ------------------------------------------------------
 # Figure 1: chemostat_scheme

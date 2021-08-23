@@ -24,8 +24,8 @@ function plot_pol_vol_study(simid, Ds, ϵs, cg , ; bins = 150)
     p = heatmap(Ds_, cgD_Xs, mat'; 
         label = "", 
         xlabel = _textbf("D"), 
-        ylabel = _textbf("c_{g}D / X"), 
-        # colorbar_title = _textbf("polytope volume")
+        ylabel = _textbf("c_g", "D/X"), 
+        colorbar_title = _textbf("polytope volume")
     )
 
     ## -----------------------------------------------------
@@ -52,10 +52,12 @@ function plot_pol_vol_study(simid, Ds, ϵs, cg , ; bins = 150)
         end
 
         scatter!(p, zs, ugs; 
-            label = _textbf("\\epsilon=", round(ϵ; sigdigits=3)),
+            label = _textbf("\\epsilon", "=", round(ϵ; sigdigits=3)),
             m = (9, shape[ϵi]), 
             color = :red
         )
+        # fake label for spacing
+        # scatter!(p, [zs[end]], [ugs[end]]; label = _textbf(" "), alpha = 0.0)
     end
     plot!(p; legend = :topleft)
     

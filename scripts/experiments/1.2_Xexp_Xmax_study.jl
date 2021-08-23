@@ -37,6 +37,9 @@ function plot_Xexp_Xmax_study()
             color = :black,
             marker, alpha = 0.8,
         )
+        # # fake label for spacing
+        # scatter!(p, [Xexps[end]], [Xmaxs[end]]; label = " ", alpha = 0.0)
+
         plot!(p; legend = :topleft)
         
         push!(all_vals, Xexps...)

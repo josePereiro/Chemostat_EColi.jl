@@ -37,7 +37,7 @@ function plot_time_series(simid, D, ϵs, cg)
             ylabel,
             color = ϵcolors[ϵi], 
             zcolor = ϵ,
-            # colorbar_title = _textbf("\\epsilon"),
+            colorbar_title = _textbf("\\epsilon"),
             xlabel = _textbf("simulation progress (\\%)"),
             lw = 3
          )
@@ -45,11 +45,11 @@ function plot_time_series(simid, D, ϵs, cg)
 
    end
    
-   ffile = sfig(ChE, [Xp, sgp], 
-      @fileid, "dyn_time_series", (;D, cg), ".png";
-      layout = (1, 2)
-   )
-   @info("Done", D, ffile)
+   # ffile = sfig(ChE, [Xp, sgp], 
+   #    @fileid, "dyn_time_series", (;D, cg), ".png";
+   #    layout = (1, 2)
+   # )
+   # @info("Done", D, ffile)
 
    return [Xp, sgp]
 end

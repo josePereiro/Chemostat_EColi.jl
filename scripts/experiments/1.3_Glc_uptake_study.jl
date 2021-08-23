@@ -6,8 +6,8 @@ function plot_Glc_uptake_study()
     methodU = :FBA_Z_FIX_MAX_VG_MIN_COST
     
     p = plot(; 
-        xlabel = _textbf("exp. u_g"), 
-        ylabel = _textbf("model u_g"), 
+        xlabel = _textbf("exp. ", "u_g"), 
+        ylabel = _textbf("model ", "u_g"), 
     )
 
     all_vals = []
@@ -26,10 +26,8 @@ function plot_Glc_uptake_study()
         @info("Doing", src)
         
         exp_vals = DAT[:exp, :flx, "GLC", EXPS]
-        model_Uvals = DAT[methodU, :flx, "GLC", EXPS]
         model_Lvals = DAT[methodL, :flx, "GLC", EXPS]
 
-        # color = [exp_colors[exp] for exp in EXPS]
         scatter!(p, abs.(exp_vals), abs.(exp_vals); 
             label = "",
             color = :red,

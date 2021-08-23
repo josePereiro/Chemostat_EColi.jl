@@ -80,7 +80,7 @@ function _plot_dyn_ug_corrs(simid, Ds, ϵs, cg)
             label = "", 
             color = ϵcolors[coll_ϵis], 
             zcolor = coll_ϵs,
-            # colorbar_title = _textbf("\\epsilon"), 
+            colorbar_title = _textbf("\\epsilon"), 
             alpha = 0.8, 
             ms = 8
         )

@@ -17,22 +17,19 @@ using ProjAssistant
     import Chemostat_InSilico
     const ChIn = Chemostat_InSilico
 
+    using Base.Threads
     using Dates
 end
 
 ## ------------------------------------------------------
-# TODO: add ArgParse capability
-JULIA_CMD = "julia"
-NTHREADS = max(Sys.CPU_THREADS - 1, 1)
-PROJ_ROOT = dirname(projdir(ChE))
-
-## ------------------------------------------------------
 # utils
 function _info(msg; kwargs...)
+    println()
+    msg = rpad(string(msg, " "), 60, "-")
     time = now()
-    println("\n"^2)
-    @info("$(msg) $("-"^45)", time, kwargs...)
-    println("\n"^2)
+    @info(msg, time, kwargs...)
+    println()
+    println()
 end
 
 function run_script(Proj::Module, arg, args...; flags::Vector = [], nthrs = NTHREADS)
@@ -46,6 +43,48 @@ function run_script(Proj::Module, arg, args...; flags::Vector = [], nthrs = NTHR
 
     return nothing
 end
+
+## ------------------------------------------------------
+# ARGS
+using ArgParse
+
+set = ArgParseSettings()
+@add_arg_table! set begin
+    "--julia-cmd"
+        help = "the juila command to use"   
+        default = Base.julia_exename()
+        type=String
+    "--pdflatex-cmd"
+        help = "the pdflatex command to use"   
+        default = "pdflatex"
+        type=String
+    "--bibtex-cmd"
+        help = "the bibtex command to use"   
+        default = "bibtex"
+        type=String
+    "--nthrs", "-t"
+        help = "the juila command to use"   
+        default = max(Sys.CPU_THREADS - 1, 1)
+        type=Int
+end
+
+if isinteractive()
+    # Dev values
+    JULIA_CMD = Base.julia_exename()
+    NTHREADS = max(Sys.CPU_THREADS - 1, 1)
+    PDFLATEX_CMD = "pdflatex"
+    BIBTEX_CMD = "bibtex"
+else
+    parsed_args = parse_args(set)
+    JULIA_CMD = parsed_args["julia-cmd"]
+    NTHREADS = parsed_args["nthrs"]
+    PDFLATEX_CMD = parsed_args["pdflatex-cmd"]
+    BIBTEX_CMD = parsed_args["bibtex-cmd"]
+end
+
+PROJ_ROOT = dirname(projdir(ChE))
+
+_info("globals"; PROJ_ROOT, NTHREADS, JULIA_CMD, PDFLATEX_CMD, BIBTEX_CMD)
 
 ## ------------------------------------------------------
 # testing juila
@@ -140,10 +179,10 @@ let
     tex_mainfile = joinpath(tex_proj, "MaxEnt_EColi.tex")
     !isfile(tex_mainfile) && error("main tex file not found, file: ", tex_mainfile)
     pdflatex_cmd = Cmd(
-        ["pdflatex", "-synctex=1", "-interaction=nonstopmode", "-file-line-error", "-recorder", 
+        [PDFLATEX_CMD, "-synctex=1", "-interaction=nonstopmode", "-file-line-error", "-recorder", 
         string("-output-directory=", tex_proj), tex_mainfile]
     )
-    bibtex_cmd = Cmd(`bibtex  "MaxEnt_EColi"`)
+    bibtex_cmd = Cmd(`$(BIBTEX_CMD)  "MaxEnt_EColi"`)
     
     try; 
         cd(tex_proj)
@@ -164,4 +203,4 @@ let
 end
 
 _info("The end")
-
+exit()

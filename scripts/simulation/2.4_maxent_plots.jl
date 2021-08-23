@@ -90,7 +90,7 @@ function plot_flux_marginals(simid, D, ϵs, cg)
                 lw = 3, 
                 color = ϵcolors[ϵi], 
                 zcolor = ϵ,
-                # colorbar_title = _textbf("\\epsilon")
+                colorbar_title = _textbf("\\epsilon")
             )
 
             _plot_marginal!(pug, P, Vug; 
@@ -100,7 +100,7 @@ function plot_flux_marginals(simid, D, ϵs, cg)
                 xlim = (-1.0, Inf),
                 lw = 3, color = ϵcolors[ϵi], 
                 zcolor = ϵ,
-                # colorbar_title = _textbf("\\epsilon")
+                colorbar_title = _textbf("\\epsilon")
             )
 
         end
