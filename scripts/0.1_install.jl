@@ -75,6 +75,7 @@ end
 
 ## ------------------------------------------------------------------
 # Clone and dev dependencies
+# TODO: (Chemostat_InSilico) pkg> add BenchmarkTools
 let
     _info("Adding .jl devs")
     for (pkgname, url, tag) in [

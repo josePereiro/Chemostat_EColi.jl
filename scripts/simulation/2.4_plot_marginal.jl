@@ -17,7 +17,7 @@ function _extract_hist_vecs(h::Dict)
     xs = collect(keys(h))
     sort!(xs)
     ys = [h[x] for x in xs]
-    _fix_outlayer!(ys, 1.1)
+    # _fix_outlayer!(ys, 1.0)
     n_ave_conv!(ys, 25)
     _normalize!(ys)
     return xs, ys
@@ -26,7 +26,7 @@ end
 ## ------------------------------------------------------
 function _plot_marginal!(plt, P, Vv; pltargs...)
     v_av = sum(P .* Vv)
-    vline!(plt, [v_av]; pltargs..., label = "", ls = :dash)
+    vline!(plt, [v_av]; pltargs..., label = "", ls = :dot)
 
     Pv = hist(Vv, P)
     xs, ys = _extract_hist_vecs(Pv)
@@ -40,17 +40,14 @@ function _plot_marginal!(plt, P, Vv; pltargs...)
 end
 
 ## ------------------------------------------------------
-function plot_flux_marginals(simid, D, ϵs, cg)
+function plot_flux_marginals3D(simid, D, ϵs, cg, is_glclim_stst)
     MEmode = "ME_AVZ_EXPECTED_AVUG_BOUNDED"
-    Dstr = string(round(D; sigdigits = 3))
-
-    ϵcolors = palette(:thermal, length(ϵs))
 
     # Plots
-    dyn_pz, dyn_pug = plot(), plot()
-    me_pz, me_pug = plot(), plot()
-    ps = [dyn_pz, dyn_pug, me_pz, me_pug]
-    Vz, Vug = nothing, nothing
+    dyn_pz, dyn_pug, dyn_puo = plot(), plot(), plot()
+    me_pz, me_pug, me_puo = plot(), plot(), plot()
+    ps = [dyn_pz, dyn_pug, dyn_puo, me_pz, me_pug, me_puo]
+    Vz, Vug, Vuo = nothing, nothing, nothing
     for (ϵi, ϵ) in enumerate(ϵs)
         
         simparams = (;D, ϵ, cg)
@@ -68,6 +65,11 @@ function plot_flux_marginals(simid, D, ϵs, cg)
             continue
         end
 
+        if !is_glclim_stst[simparams]
+            @warn("Not glc-lim STST ", status)
+            continue
+        end
+
         dat = Dyn.load_maxent(simid, MEmode, simparams)
         PME = dat.PME
 
@@ -76,49 +78,42 @@ function plot_flux_marginals(simid, D, ϵs, cg)
         V = S.V
         Vz = Vi(V, :z)
         Vug = Vi(V, :ug)
+        Vuo = Vi(V, :uo)
 
-        for (P, pz, pug) in [
-                (PX, dyn_pz, dyn_pug), 
-                (PME, me_pz, me_pug)
+        z_avPME = sum(PME .* Vz)
+        if (abs(z_avPME - D) / D) > 0.05
+            @warn("D and z not converged", status, z_avPME, D)
+            continue
+        end
+
+        max_ϵs_ = maximum(ϵs)
+        ls0 = 3
+
+        for (P, pz, pug, puo) in [
+                (PX, dyn_pz, dyn_pug, dyn_puo), 
+                (PME, me_pz, me_pug, me_puo)
             ]
-            ylim = [0.0, 1.2]
-            ylabel = _textbf("norm. pdf")
+            comparams = (;
+                ylim = [0.0, 1.2],
+                ylabel = _textbf("non-normalized pdf"),
+                lw =  ls0 + (2 * ls0) * (ϵ / max_ϵs_),
+                color = :black, 
+                alpha = 0.7
+            )
             _plot_marginal!(pz, P, Vz; 
                 xlabel = _textbf("z"), 
-                ylabel, 
-                ylim,
-                lw = 3, 
-                color = ϵcolors[ϵi], 
-                zcolor = ϵ,
-                colorbar_title = _textbf("\\epsilon")
+                comparams...
             )
 
             _plot_marginal!(pug, P, Vug; 
                 xlabel = _textbf("u_g"), 
-                ylabel, 
-                ylim,
-                xlim = (-1.0, Inf),
-                lw = 3, color = ϵcolors[ϵi], 
-                zcolor = ϵ,
-                colorbar_title = _textbf("\\epsilon")
+                comparams...
             )
 
-        end
-    end
-
-    # anotations
-    x1s = maximum.([Vz, Vug])
-    x0s = (0.0, -0.5)
-    fontsize = 16
-    for (title, ps) in [
-            ("Dynamic", [dyn_pz, dyn_pug]), 
-            ("ME", [me_pz, me_pug]), 
-        ]
-        for (p, x0, x1) in zip(ps, x0s, x1s)
-            text = _textbf(title)
-            annotate!(p, [(x0 + x1 * 0.03, 1.0, (text, fontsize, :left, :top, :black))])
-            text = _textbf("D=", Dstr)
-            annotate!(p, [(x0 + x1 * 0.03, 0.92, (text, fontsize, :left, :top, :black))])
+            _plot_marginal!(puo, P, Vuo; 
+                xlabel = _textbf("u_o"), 
+                comparams...
+            )
         end
     end
 

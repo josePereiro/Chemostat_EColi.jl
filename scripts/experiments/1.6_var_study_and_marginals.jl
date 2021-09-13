@@ -127,19 +127,18 @@ function plot_me_marginals()
     @info("Doing", src, exp)
 
     ps = Plots.Plot[]
-    for (exp_ider, xlim) in [
-            ("GLC", (-2.6, -0.8)), 
-            ("AC", (-0.015, 0.075)), 
-            ("D", (0.0, 0.2)),
+    for (sign, exp_ider, ylabel, xlim) in [
+            (-1.0, "GLC", "u_g" , (0.8, 2.6)), 
+            (-1.0, "AC", "u_a", (-0.075, 0.015)), 
+            (1.0, "D", "z", (0.0, 0.2)),
         ]
 
         model_ider = rxns_map[exp_ider]
 
         p = plot(; 
-            xlabel = _textbf(exp_ider == "D" ? "z" : exp_ider),
-            ylabel = _textbf("norm. pdf")
+            xlabel = _textbf(ylabel),
+            ylabel = _textbf("norm. pdf"), 
         )
-        avs, vas = [], []
 
         for method in [me_method1, me_method2]
             
@@ -149,17 +148,29 @@ function plot_me_marginals()
             exp_beta = maximum(keys(epouts))
             epout = epouts[exp_beta]
 
-            ChP.plot_marginal!(p, model, epout, model_ider;
+            # uses absolute values
+            
+            lb_, ub_  = ChU.bounds(model, model_ider)
+            @show model_ider, lb_, ub_
+            @assert lb_ * ub_ >= 0 # both bounds with equal sign
+            lb_, ub_ = sort!(sign .* [lb_, ub_])
+            @show lb_, ub_
+
+            μ_ = sign * ChU.μ(model, epout, model_ider)
+            av_ = sign * ChU.av(model, epout, model_ider)
+            σ_ = sqrt(ChU.σ(model, epout, model_ider))
+            @show μ_, av_, σ_
+            ChP.plot_marginal!(p, μ_, σ_, lb_, ub_; 
+                av = av_, 
                 color = colors[method], 
                 label = _textbf(labels[method]), 
                 xlim,
-                lw = 4,
+                lw = 5,
+                legend=:topleft,
                 normalize = true
             )
 
-            av = ChU.av(model, epout, model_ider)
-            va = ChU.va(model, epout, model_ider)
-            push!(avs, av); push!(vas, va) 
+            println()
         end
         push!(ps, p)
 

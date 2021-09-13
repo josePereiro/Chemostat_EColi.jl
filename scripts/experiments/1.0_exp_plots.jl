@@ -53,7 +53,7 @@ end
 ider_colors = Dict(
     "GLC" => :black, 
     "CO2" => :blue, 
-    "O2" => :red, 
+    "O2" => :red,
     "AC" => :pink, 
     "NH4" => :orange, 
     "FORM" => :purple, 
@@ -83,20 +83,6 @@ source_markers = Dict(
 )
 
 ## ------------------------------------------------------
-function pltparams()
-    return (;
-        titlefont = 16,
-        axisfont = 16,
-        guidefont = 16,
-        colorbar_titlefont = 16,
-        xtickfont = 12,
-        ytickfont = 12,
-        legendfont = 12,
-        thickness_scaling = 1.6,
-        size = (1220, 940)
-    )
-end
-
 function _textbf(strs...)
    strs = replace.(string.(strs), " " => "~")
    latexstring(string("\\mathbf{", strs..., "}"))
@@ -106,13 +92,13 @@ end
 # figure 8
 include("1.1_pol_box_size.jl")
 include("1.2_Xexp_Xmax_study.jl")
-include("1.3_Glc_uptake_study.jl")
+include("1.3_residual_Glc_study.jl")
 
 let
     # panel 1
     # TODO: Add colorbar_title
     Dlim = [0.01, 0.5]
-    cgD_Xlim = [-40.0, 0.0]
+    cgD_Xlim = [0.0, 40.0]
     bins = 60
     panel1 = plot_pol_box_size(
         ChN.iJR904, ChN.NanchenData; 
@@ -123,12 +109,21 @@ let
     panel2 = plot_Xexp_Xmax_study()
     
     # panel 3
-    panel3 = plot_Glc_uptake_study()
+    panel3 = plot_residual_Glc_study()
 
-    for p in [panel1, panel2, panel3]
+    for (title, p) in [
+            ("A", panel1), 
+            ("B", panel2), 
+            ("C", panel3)
+        ]
         plot!(p;
-            guidefont = 14,
-            thickness_scaling = 2.3,
+            title,
+            titlefont = 22,
+            legendfont = 18,
+            guidefont = 22,
+            xtickfont = 21,
+            ytickfont = 21,
+            thickness_scaling = 1.6,
             size = (1320, 940)
         )
     end
@@ -157,8 +152,8 @@ let
 
     METHODS_LABELS = [
         "FBA max. z",
-        "FBA min. ug",
-        "FBA max. ug",
+        "FBA min. u_g",
+        "FBA max. u_g",
         "FBA max. ATP",
         "ME",
     ]
@@ -175,15 +170,21 @@ let
     push!(ps, inner_ps[0.4]...)
     push!(ps, inner_ps[:tot]...)
 
+    # params = (;
+    #    guidefont = 30,
+    #    xtickfont = 28,
+    #    ytickfont = 28,
+    #    margin = 4mm,
+    #    thickness_scaling = 1.6,
+    #    size = (1120, 940)
+    # )
+
     params = (;
-       titlefont = 26,
-       axisfont = 26,
-       guidefont = 26,
-       xtickfont = 22,
-       ytickfont = 22,
-       legendfont = 12,
-       thickness_scaling = 1.6,
-       size = (1220, 940)
+       guidefont = 52,
+       xtickfont = 50,
+       ytickfont = 50,
+       rightmargin = 12mm,
+       size = (1120, 940)
     )
 
     for p in ps
@@ -191,10 +192,10 @@ let
     end
 
     # add margin
-    for ps in [exch_ps, values(inner_ps)...]
-        plot!(first(ps); leftmargin = 5mm)
-        plot!(last(ps); rightmargin = 7mm)
-    end
+    # for ps in [exch_ps, values(inner_ps)...]
+    #     plot!(first(ps); leftmargin = 5mm)
+    #     plot!(last(ps); rightmargin = 7mm)
+    # end
 
     sfig(ChE, ps,
         "figure_9", ".png";

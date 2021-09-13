@@ -19,7 +19,7 @@ function plot_exch_corrs(METHODS, METHODS_LABELS = string.(METHODS))
             (ChF.iJR904, ChF.FolsomData),
         ]
             src = nameof(Data)
-            marker = (10, source_markers[Data])
+            marker = (35, source_markers[Data])
 
             @show src
             DAT = ChE.load_DAT(src)

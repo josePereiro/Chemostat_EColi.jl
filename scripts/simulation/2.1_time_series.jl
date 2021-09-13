@@ -1,8 +1,6 @@
 ## ------------------------------------------------------
 function plot_time_series(simid, D, ϵs, cg)
 
-   ϵcolors = palette(:thermal, length(ϵs))
-
    Dstr = string(round(D; sigdigits = 3))
    tslim = [Inf, -Inf]
 
@@ -11,6 +9,9 @@ function plot_time_series(simid, D, ϵs, cg)
    
    sgp = plot()
    sglim = [0.0, -Inf]
+
+   max_ϵs_ = maximum(ϵs)
+   ls0 = 2.5
 
    for (ϵi, ϵ) in enumerate(ϵs)
       
@@ -24,26 +25,30 @@ function plot_time_series(simid, D, ϵs, cg)
 
       ts = ts ./ maximum(ts) .* 100.0
       tslim = (-5.0, 105.0)
-      
-      for (p, ys, ylim, ylabel) in [
-         [Xp, Xts, Xlim, _textbf("X")],
-         [sgp, sgts, sglim, _textbf("s_g")]
+
+      for (p, panel, ys, ylim, ylabel) in [
+         [Xp, "A", Xts, Xlim, _textbf("X")],
+         [sgp, "B", sgts, sglim, _textbf("s_g")]
       ]
          ylim .= lims(ys, ylim)
          plot!(p, ts, ys; 
-            title = _textbf("D=", Dstr),
+            title = _textbf(panel),
             xlim = tslim, ylim,
             label = "", 
             ylabel,
-            color = ϵcolors[ϵi], 
-            zcolor = ϵ,
-            colorbar_title = _textbf("\\epsilon"),
+            color = :black,
             xlabel = _textbf("simulation progress (\\%)"),
-            lw = 3
+            alpha = 0.7,
+            lw = ls0 + (2.0 * ls0) * (ϵ / max_ϵs_)
          )
       end
-
    end
+   
+   # annotation
+   # fontsize = 16
+   # text = _textbf("D=", Dstr)
+   # annotate!(Xp, [(70.0, last(Xlim)* 0.4, (text, fontsize, :left, :top, :black))])
+   # annotate!(sgp, [(70.0, last(sglim)* 0.4, (text, fontsize, :left, :top, :black))])
    
    # ffile = sfig(ChE, [Xp, sgp], 
    #    @fileid, "dyn_time_series", (;D, cg), ".png";

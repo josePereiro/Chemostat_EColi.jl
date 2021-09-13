@@ -24,13 +24,16 @@ function plot_pol_box_size(iJR, Data;
     exglcL, exglcU = ChU.bounds(model0, exglcidx)
     
     maxD = maximum(Data.val(:D)) * offsetf 
-    max_cgD_X = -maximum(Data.ciD_X(:GLC)) * offsetf
+    max_cgD_X = maximum(Data.ciD_X(:GLC)) * offsetf
     
     Dlim = isnothing(Dlim) ? [0.01, maxD] : Dlim
     Ds = range(Dlim...; length = bins)
-
-    cgD_Xlim = isnothing(cgD_Xlim) ? [max_cgD_X, exglcU] : cgD_Xlim
-    cgD_Xs = range(cgD_Xlim...; length = bins)
+    @show Ds
+    
+    # ug negative means uptake !!!
+    cgD_Xlim = isnothing(cgD_Xlim) ? [abs(exglcU), max_cgD_X] : cgD_Xlim
+    cgD_Xs = range(cgD_Xlim...; length = bins) # make possitive
+    @show cgD_Xs
 
     cid = (:BOX_VOL, src, Dlim, cgD_Xlim, bins)
     box_vols = lcache(ChE, cid) do
@@ -57,7 +60,8 @@ function plot_pol_box_size(iJR, Data;
             for (Di, D, cgD_Xi, cgD_X) in Ch
                 
                 # Reduce Pol
-                ChU.lb!(model, exglcidx, cgD_X)
+                # ug negative means uptake !!!
+                ChU.lb!(model, exglcidx, -cgD_X)
                 ChU.bounds!(model, biomidx, D, D)
                 box_vols_[Di, cgD_Xi] = _box_vol(model, model_idxs)
             end
@@ -70,13 +74,18 @@ function plot_pol_box_size(iJR, Data;
     p = heatmap(Ds, cgD_Xs, box_vols'; 
         label = "", 
         xlabel = _textbf("D"), 
-        ylabel = _textbf("-c_g", "D/X"), 
-        colorbar_title = _textbf("polytope volume")
+        ylabel = _textbf("c_g", "D/X"), 
+        color = :greys,
     )
 
+    fontsize = 20
+    text_ = _textbf("polytope volume")
+    plot!(p; rightmargin = 19mm)
+    annotate!(p, 0.66, 20.0, text(text_, fontsize, :black, rotation = 90))
+
     # exp vals
-    marker = (9, source_markers[Data])
-    scatter!(p, Data.val(:D), -abs.(Data.ciD_X(:GLC));
+    marker = (10, source_markers[Data])
+    scatter!(p, Data.val(:D), abs.(Data.ciD_X(:GLC));
         label = "", color = :white, marker
     )
 

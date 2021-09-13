@@ -45,7 +45,7 @@ function plot_inner_plots(METHODS, METHODS_LABELS = string.(METHODS))
                 iJR_iders = iJR_ider_subs[sub]
 
                 (sub in ["others"]) && continue
-                marker = (10, subs_markers[sub])
+                marker = (35, subs_markers[sub])
 
                 
                 for iJR_ider in iJR_iders
@@ -88,11 +88,12 @@ function plot_inner_plots(METHODS, METHODS_LABELS = string.(METHODS))
             m, M = minimum(vals), maximum(vals)
             x = m + (M - m) * 0.01
             y = M - (M - m) * 0.05
+            fontsize = 50
             Dstr = (avD == :tot) ? "all" : round(avD; sigdigits=2)
             text = _textbf(method_label)
-            annotate!(p, [(x, y, (text, 26, :left, :top, :black))])
+            annotate!(p, [(x, y, (text, fontsize, :left, :top, :black))])
             text = _textbf("D=", Dstr)
-            annotate!(p, [(x, y - y * 0.13, (text, 26, :left, :top, :black))])
+            annotate!(p, [(x, y - y * 0.13, (text, fontsize, :left, :top, :black))])
 
             push!(ps, p)
         

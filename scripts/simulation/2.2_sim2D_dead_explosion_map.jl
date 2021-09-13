@@ -27,8 +27,9 @@ function plot_dead_explosion_map()
     end
 
     @info("At", cg)
+    # title = _textbf("c_{g}=Inf"),
     p = plot(;
-        title = _textbf("c_{g}=Inf"),
+        title = _textbf("B"),
         xlabel = _textbf("D"), 
         ylabel = _textbf("\\epsilon")
     )
