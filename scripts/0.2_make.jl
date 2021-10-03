@@ -114,9 +114,9 @@ end
 let
     # sim2D
     _info("Run simulation")
-    run_script(ChIn.Dynamic, ["sim2D"], "1.0_compute_Spaces.jl")
-    run_script(ChIn.Dynamic, ["sim2D"], "2.0_run_sim2D.jl")
-    run_script(ChIn.Dynamic, ["sim2D"], "3.0_run_MaxEnt.jl")
+    run_script(ChIn.Dynamic, "1.0_compute_Spaces.jl")
+    run_script(ChIn.Dynamic, ["sim3D"], "2.0_run_sim3D.jl")
+    run_script(ChIn.Dynamic, ["sim3D"], "3.0_run_MaxEnt.jl")
 end
 
 ## ------------------------------------------------------
