@@ -82,22 +82,22 @@ let
             (
                 "Chemostat_InSilico", 
                 "https://github.com/josePereiro/Chemostat_InSilico.jl", 
-                "v0.2.0"
+                "v0.2.3"
             ),
             (
                 "Chemostat_Kayser2005", 
                 "https://github.com/josePereiro/Chemostat_Kayser2005.jl",
-                "v0.2.1"
+                "v0.2.2"
             ), 
             (
                 "Chemostat_Nanchen2006", 
                 "https://github.com/josePereiro/Chemostat_Nanchen2006.jl", 
-                "v0.2.1"
+                "v0.2.2"
             ), 
             (
                 "Chemostat_Folsom2014", 
                 "https://github.com/josePereiro/Chemostat_Folsom2014.jl",
-                "v0.2.1"
+                "v0.2.2"
             ), 
         ]
         
