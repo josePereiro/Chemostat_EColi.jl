@@ -8,7 +8,7 @@ function plot_ME_methods_comparizon()
 
     me_method1 = :ME_MAX_POL
     me_method2 = :ME_Z_EXPECTED_G_BOUNDED
-    me_name1 = "ME^2" 
+    me_name1 = "ME^2"
     me_name2 = "ME^1"
     
     corr_av_p0 = plot(;
@@ -118,8 +118,8 @@ function plot_me_marginals()
     )
     
     labels = Dict(
-        me_method1 => "ME^1",
-        me_method2 => "ME^2",
+        me_method1 => "ME^2",
+        me_method2 => "ME^1",
     )
     
     rxns_map = iJR.load_rxns_map()

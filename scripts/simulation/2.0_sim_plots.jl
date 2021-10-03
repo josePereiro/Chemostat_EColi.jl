@@ -71,12 +71,9 @@ let
 end
 
 ## ------------------------------------------------------
-# Figure 4: toy_net_and_time_series
+# Figure 4: dyn_time_series
 include("2.1_time_series.jl")
 let
-   
-   # scheme
-   toy_net = lfig(rawdir(ChE, "toy_model_scheme.png"))
 
    # time series
    Di = 8
@@ -93,11 +90,6 @@ let
          size = (1220, 940)
       )
    end
-
-   # sfig(ChE, [toy_net, Xp, sgp],
-   #    "figure_4", ".png"; 
-   #    layout = (1, 3)
-   # )
 
    sfig(ChE, [Xp, sgp],
       "figure_4", ".png"; 
@@ -135,43 +127,8 @@ let
 
 end
 
-
 ## ------------------------------------------------------
 # Figure 6
-include("2.4_plot_marginal.jl")
-
-let
-   # D_ = Ds[7]
-   D_ = Ds[6]
-   @show D_
-   ϵs_ = ϵs[1:3:end]
-   # ϵs_ = ϵs[1:1]
-   ps = plot_flux_marginals3D(simid, D_, ϵs_, cg, is_glclim_stst)
-
-   plot!(ps[1]; bottom_margin=5mm)
-   plot!(ps[4]; bottom_margin=5mm)
-   for p in ps
-      plot!(p; titlefont = 22,
-         guidefont = 22,
-         xtickfont = 18,
-         ytickfont = 18,
-         legendfont = 14,
-         thickness_scaling = 1.6,
-         size = (1220, 940)
-      )
-   end
-
-   layout = (2, 3)
-   ffile = sfig(ChE, ps, 
-      "figure_6", ".png";
-      layout
-   )
-   @info("Done", ffile)
-
-end
-
-## ------------------------------------------------------
-# Figure 7
 include("2.5_flx_corrs.jl")
 
 let
@@ -191,8 +148,63 @@ let
    
    @assert length(ps) == 3 * 6
    sfig(ChE, ps, 
-      "figure_7", ".png";
+      "figure_6", ".png";
       layout = (6, 3)
    )
 
 end 
+
+## ------------------------------------------------------
+# Figure 7
+include("2.4_plot_marginal.jl")
+
+let
+   D_ = Ds[6]
+   @show D_
+   ϵs_ = ϵs[1:3:end]
+   ps = plot_flux_marginals3D(simid, D_, ϵs_, cg, is_glclim_stst)
+
+   plot!(ps[1]; bottom_margin=5mm)
+   plot!(ps[4]; bottom_margin=5mm)
+   for p in ps
+      plot!(p; titlefont = 22,
+         guidefont = 22,
+         xtickfont = 18,
+         ytickfont = 18,
+         legendfont = 14,
+         thickness_scaling = 1.6,
+         size = (1220, 940)
+      )
+   end
+
+   layout = (2, 3)
+   ffile = sfig(ChE, ps, 
+      "figure_7", ".png";
+      layout
+   )
+   @info("Done", ffile)
+
+end
+
+
+## ------------------------------------------------------
+# Figure 10
+include("2.2_sim3D_dead_explosion_map.jl")
+let
+   p = plot_dead_explosion_map(simid)
+
+   plot!(p; titlefont = 22,
+      guidefont = 22,
+      xtickfont = 18,
+      ytickfont = 18,
+      legendfont = 14,
+      thickness_scaling = 1.6,
+      size = (1220, 940)
+   )
+
+   ffile = sfig(ChE, p, 
+      "figure_10", ".png"
+   )
+   @info("Done", ffile)
+
+end

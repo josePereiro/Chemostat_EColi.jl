@@ -152,8 +152,8 @@ let
 
     METHODS_LABELS = [
         "FBA max. z",
-        "FBA min. u_g",
-        "FBA max. u_g",
+        "FBA min. ug",
+        "FBA max. ug",
         "FBA max. ATP",
         "ME",
     ]
@@ -170,21 +170,15 @@ let
     push!(ps, inner_ps[0.4]...)
     push!(ps, inner_ps[:tot]...)
 
-    # params = (;
-    #    guidefont = 30,
-    #    xtickfont = 28,
-    #    ytickfont = 28,
-    #    margin = 4mm,
-    #    thickness_scaling = 1.6,
-    #    size = (1120, 940)
-    # )
-
     params = (;
-       guidefont = 52,
-       xtickfont = 50,
-       ytickfont = 50,
-       rightmargin = 12mm,
-       size = (1120, 940)
+       titlefont = 26,
+       axisfont = 26,
+       guidefont = 26,
+       xtickfont = 22,
+       ytickfont = 22,
+       legendfont = 12,
+       thickness_scaling = 1.6,
+       size = (1220, 940)
     )
 
     for p in ps
@@ -192,10 +186,10 @@ let
     end
 
     # add margin
-    # for ps in [exch_ps, values(inner_ps)...]
-    #     plot!(first(ps); leftmargin = 5mm)
-    #     plot!(last(ps); rightmargin = 7mm)
-    # end
+    for ps in [exch_ps, values(inner_ps)...]
+        plot!(first(ps); leftmargin = 5mm)
+        plot!(last(ps); rightmargin = 7mm)
+    end
 
     sfig(ChE, ps,
         "figure_9", ".png";
@@ -205,7 +199,7 @@ let
 end;
 
 ## ---------------------------------------------------------------------------------
-# figure 10
+# figure 11
 include("1.6_var_study_and_marginals.jl")
 
 let    
@@ -250,7 +244,7 @@ let
     )
 
     sfig(ChE, lfig.([margs_file, corrs_file]),
-        "figure_10", ".png";
+        "figure_11", ".png";
         layout = (1, 2)
     )
 

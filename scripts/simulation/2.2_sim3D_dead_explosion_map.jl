@@ -1,8 +1,9 @@
 ## ---------------------------------------------------------------
-function plot_dead_explosion_map()
+function plot_dead_explosion_map(simid)
     
-    params = lglob(Dyn, :dyn, :params, :infinite_cg)
-    @extract params: Ds ϵs cg simid
+    params = lglob(Dyn, simid, :params, :infinite_cg)
+    @show params
+    @extract params: Ds ϵs cg
     
     Ds_idxs = Dict(D => i for (i, D) in enumerate(Ds))
     ϵs_idxs = Dict(ϵ => i for (i, ϵ) in enumerate(ϵs))
@@ -29,7 +30,7 @@ function plot_dead_explosion_map()
     @info("At", cg)
     # title = _textbf("c_{g}=Inf"),
     p = plot(;
-        title = _textbf("B"),
+        title = _textbf(""),
         xlabel = _textbf("D"), 
         ylabel = _textbf("\\epsilon")
     )
