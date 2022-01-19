@@ -147,33 +147,25 @@ version = "0.1.5"
 
 [[Chemostat_Folsom2014]]
 deps = ["ArgParse", "BSON", "CSV", "Chemostat", "DataFrames", "DrWatson", "GR", "MAT", "Plots", "ProgressMeter", "ProjAssistant", "Serialization", "SimTools", "SparseArrays"]
-git-tree-sha1 = "7914a8e3c9fea41ddef4eeb0cbcb397fe6c5df41"
-repo-rev = "main"
-repo-url = "/Users/Pereiro/University/Research/WIP/Chemostat_Folsom2014"
+path = "../Chemostat_Folsom2014"
 uuid = "00d3f078-7623-4eb4-9094-80f290b0a20e"
 version = "0.2.2"
 
 [[Chemostat_InSilico]]
 deps = ["BenchmarkTools", "Clp", "ExtractMacro", "GR", "MathProgBase", "Plots", "ProgressMeter", "ProjAssistant", "Random", "SimTools", "Statistics"]
-git-tree-sha1 = "ce5db15269e168659939e5f65ff180e1f2e6987a"
-repo-rev = "main"
-repo-url = "/Users/Pereiro/University/Research/WIP/Chemostat_InSilico"
+path = "../Chemostat_InSilico"
 uuid = "d43f3d26-279f-4b31-985f-d16d95e3278a"
 version = "0.2.3"
 
 [[Chemostat_Kayser2005]]
 deps = ["ArgParse", "BSON", "CSV", "Chemostat", "DataFrames", "DrWatson", "GR", "MAT", "Plots", "ProgressMeter", "ProjAssistant", "Serialization", "SimTools", "SparseArrays"]
-git-tree-sha1 = "338d784f8696a0500fec67be4738b4915115e815"
-repo-rev = "main"
-repo-url = "/Users/Pereiro/University/Research/WIP/Chemostat_Kayser2005"
+path = "../Chemostat_Kayser2005"
 uuid = "62075988-fc80-11ea-3c7a-ad81f43b029e"
 version = "0.2.2"
 
 [[Chemostat_Nanchen2006]]
 deps = ["ArgParse", "BSON", "CSV", "Chemostat", "DataFrames", "DrWatson", "ExtractMacro", "GR", "MAT", "Plots", "ProgressMeter", "ProjAssistant", "Serialization", "SimTools", "SparseArrays", "Statistics"]
-git-tree-sha1 = "7a509438686518b042eab127f76604f45af7fb76"
-repo-rev = "main"
-repo-url = "/Users/Pereiro/University/Research/WIP/Chemostat_Nanchen2006"
+path = "../Chemostat_Nanchen2006"
 uuid = "8f92618d-94d3-4879-9356-aac9ef9aa014"
 version = "0.2.2"
 

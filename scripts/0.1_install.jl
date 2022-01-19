@@ -1,5 +1,5 @@
 import Pkg
-import Pkg: RegistrySpec, PackageSpec
+import Pkg: RegistrySpec, PackageSpec, pkgdir, PRESERVE_ALL
 
 ## ------------------------------------------------------------------
 function _info(msg; kwargs...)
@@ -19,9 +19,10 @@ _info("Add registries")
 Pkg.Registry.add(RegistrySpec(url = "https://github.com/josePereiro/CSC_Registry.jl"))
 
 # ----------------------------------------------------------------------------
-_info("Install fundamentals")
-Pkg.add(name="ProjAssistant", version="0.2.1")
-Pkg.add(name="ArgParse")
+_info("Activate Chemostat_EColi")
+CH_ECOLI_DIR = Base.current_project(@__DIR__) |> dirname
+basename(CH_ECOLI_DIR) != "Chemostat_EColi" && error("Not at 'Chemostat_EColi' folder!!!")
+Pkg.activate(CH_ECOLI_DIR)
 
 # ----------------------------------------------------------------------------
 # ARGS
@@ -43,21 +44,8 @@ else
 end
 
 ## ------------------------------------------------------------------
-# activate
-using ProjAssistant
-@quickactivate
-
-## ------------------------------------------------------------------
-_info("instantiate Chemostat_EColi")
-Pkg.instantiate()
-
-## ------------------------------------------------------------------
-import Chemostat_EColi
-const ChE = Chemostat_EColi
-
-## ------------------------------------------------------------------
 # globals
-PROJ_ROOT = dirname(projdir(ChE))
+PROJ_ROOT = dirname(CH_ECOLI_DIR)
 cd(PROJ_ROOT)
 
 _info("Globals"; PROJ_ROOT, GIT_CMD)
@@ -112,17 +100,14 @@ let
         cd(pkg_path)
         _checkout_tag(tag)
         
-        # develop
+        # add
         _info("develop"; pkgname, tag)
-        Pkg.activate(projdir(ChE))
-        Pkg.develop(;path=pkg_path)
+        Pkg.activate(CH_ECOLI_DIR)
+        Pkg.develop(;url=relpath(pkg_path), preserve = PRESERVE_ALL)
         
         _info("instanciate"; pkgname, tag)
         Pkg.activate(pkg_path)
         Pkg.instantiate()
-
-        _info("precompile"; pkgname, tag)
-        Pkg.precompile()
 
         cd(PROJ_ROOT)
     end
@@ -131,7 +116,7 @@ end
 ## ------------------------------------------------------------------
 # precompile
 _info("precompile Chemostat_EColi")
-Pkg.activate(projdir(ChE))
+Pkg.activate(CH_ECOLI_DIR)
 Pkg.precompile()
 
 ## ------------------------------------------------------------------
@@ -146,6 +131,10 @@ catch err
     @warn("Error loading source package, see scripts/0.1_install.jl")
     rethrow(err)
 end
+
+## ------------------------------------------------------------------
+_info("instantiate Chemostat_EColi")
+Pkg.instantiate()
 
 # ## ------------------------------------------------------------------
 # # TODO: make repo public
