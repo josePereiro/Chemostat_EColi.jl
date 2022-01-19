@@ -1,16 +1,15 @@
 ## -------------------------------------------------------------------
 # model vs exp comparison
-function _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_SHAPES)
+function _plot_inner_fluxs_ERR(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_SHAPES, REF_METHOD)
 
     iJR = ChN.iJR904
     Data = ChN.NanchenData
+
+    SUBS = ["glc tranport", "biomass", "glycolysis", "pentose phosphate", "krebs", "glyoxylate shunt"]
     
     Nd_rxns_map = iJR.load_rxns_map()
     iJR_ider_subs = iJR.load_inner_rxns_subs()
-    
-    sort_iders(iders) = sort!(deepcopy(iders), 
-        by = (ider) -> ider == "GLC" ? "AAA" : ider
-    )
+    iJR_ider_subs["biomass"] = ["D"]
     
     # Collect
     src = nameof(Data)
@@ -36,6 +35,8 @@ function _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_
 
     for (avD, exps) in Dintervals
 
+        # avD != :tot && continue
+
         # ----------------------------------------------------------------
         # Collect data pool
         dat_pool = Dict()
@@ -44,12 +45,13 @@ function _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_
         edat = get!(dat_pool, :exp, Dict())
         for exp in exps
             !haskey(DAT, :exp, :flx, "GLC", exp) && continue
-            glc_exp_val = DAT[:exp, :flx, "GLC", exp]
+            # glc_exp_val = DAT[:exp, :flx, "GLC", exp]
             
-            for (sub, iJR_iders) in iJR_ider_subs
-                for iJR_ider in iJR_iders
-                    Nd_ider = Nd_rxns_map[iJR_ider]
-                    exp_val = abs(DAT[:exp, :flx, Nd_ider, exp] / glc_exp_val)
+            for sub in SUBS
+                for iJR_ider in iJR_ider_subs[sub]
+                    Nd_ider = (iJR_ider == "D") ? "D" : Nd_rxns_map[iJR_ider]
+                    # exp_val = abs(DAT[:exp, :flx, Nd_ider, exp] / glc_exp_val)
+                    exp_val = abs(DAT[:exp, :flx, Nd_ider, exp])
 
                     @info(:exp, exp, iJR_ider, exp_val); println()
 
@@ -66,15 +68,17 @@ function _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_
 
             for exp in exps
                 !haskey(DAT, :exp, :flx, "GLC", exp) && continue
-                glc_exp_val = DAT[:exp, :flx, "GLC", exp]
+                # glc_exp_val = DAT[:exp, :flx, "GLC", exp]
 
                 @info(method, exp); println()
 
-                for (sub, iJR_iders) in iJR_ider_subs
+                for sub in SUBS
                     (sub in ["others"]) && continue
+                    iJR_iders = iJR_ider_subs[sub]
                     for iJR_ider in iJR_iders
                         !haskey(DAT, method, :flx, iJR_ider, exp) && continue
-                        model_val = abs(DAT[method, :flx, iJR_ider, exp] / glc_exp_val)
+                        # model_val = abs(DAT[method, :flx, iJR_ider, exp] / glc_exp_val)
+                        model_val = abs(DAT[method, :flx, iJR_ider, exp])
                         
                         @info(method, exp, iJR_ider, model_val); println()
                         
@@ -90,8 +94,8 @@ function _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_
         xticks_pos = []
         xticks_iders = []
         ms = 8
-        p = plot(;xlabel = _textbf("Reactions"), 
-            ylabel = _textbf("log MSE"), xgrid = false
+        p = plot(;xlabel = "", 
+            ylabel = _textbf("ARE"), xgrid = false
         )
         sep1 = 5
         sep2 = 3 * sep1
@@ -100,7 +104,7 @@ function _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_
         gc = 1
         last_gc = gc
         ci = 1
-        for sub in NiJR.subs()
+        for sub in SUBS
             (sub in ["others"]) && continue
             iJR_iders = iJR_ider_subs[sub]
 
@@ -127,8 +131,9 @@ function _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_
         # fluxes
         gc = 1
         minval, maxval = Inf, -Inf
-        f(x) = x <= 0 ? -5 : log10(x)
-        for sub in NiJR.subs()
+        # f(x) = x <= 0 ? -5 : log10(x)
+        f(x) = x
+        for sub in SUBS
             (sub in ["others"]) && continue
             
             iJR_iders = iJR_ider_subs[sub]
@@ -141,22 +146,39 @@ function _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_
                 push!(xticks_pos, gc + 2 * sep1)
                 push!(xticks_iders, iJR_ider)
 
+                # reference
+                ref_mdat = dat_pool[REF_METHOD]
+                # ref_SE = (ref_mdat[iJR_ider] .- edat[iJR_ider]).^2
+                # ref_SE = (ref_mdat[iJR_ider] ./ edat[iJR_ider] .- 1.0).^2
+                ref_SE = (ref_mdat[iJR_ider] ./ edat[iJR_ider] .- 1.0) .|> abs
+                ref_MERR = mean(ref_SE)
+                ref_MERR = clamp(ref_MERR, 0, 100) # Inf = 10
+                ref_SSE = std(ref_SE)
+                
                 # modeled 
                 for method in METHODS
                     mdat = dat_pool[method]
                     color = METHODS_COLORS[method]
-
-                    SE = (mdat[iJR_ider] .- edat[iJR_ider]).^2
-                    MSE = mean(SE)
+                    
+                    # SE = (mdat[iJR_ider] .- edat[iJR_ider]).^2
+                    # SE = (mdat[iJR_ider] ./ edat[iJR_ider] .- 1.0).^2
+                    SE = (mdat[iJR_ider] ./ edat[iJR_ider] .- 1.0) .|> abs
+                    MERR = mean(SE)
+                    MERR = clamp(MERR, 0, 100) # Inf = 10
                     SSE = std(SE)
 
                     m = (ms, get(METHODS_SHAPES, method, :square))
-                    scatter!(p, [gc + sep1], [f.(MSE)]; 
+                    # val = MERR - ref_MERR
+                    
+                    val = MERR
+                    val = clamp(val, -1, 1)
+
+                    scatter!(p, [gc + sep1], [f.(val)]; 
                         color, label = "", m, alpha = 0.8
                     )
                     gc += sep1
-                    maxval = max(maxval, MSE)
-                    minval = min(minval, MSE)
+                    maxval = max(maxval, val)
+                    minval = min(minval, val)
                 end
                 gc += sep2
             end
@@ -177,76 +199,18 @@ function _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_
         end
 
         # ticks and margin
+        xticks_iders[xticks_iders .== "D"] .= "BiomassEcoli"
         xticks = (xticks_pos, xticks_iders)
         xrotation = 45
         minval, maxval = f(minval), f(maxval)
         margin = (maxval - minval) * 0.1
         ylim = [minval - margin, maxval + margin]
         plot!(p; xticks, xrotation, ylim)
+        # plot!(p; xticks, xrotation)
 
         ps[avD] = p
-
-        # return ps
 
     end # for (avD, exps) in Dintervals
 
     return ps
-end
-
-# -------------------------------------------------------------------
-let
-
-    # [:none, :auto, :circle, :rect, :star5, :diamond, :hexagon, :cross, :xcross, :utriangle, 
-    # :dtriangle, :rtriangle, :ltriangle, :pentagon, :heptagon, :octagon, :star4, :star6, 
-    # :star7, :star8, :vline, :hline, :+, :x].
-    METHODS_SHAPES = Dict(
-        :FBA_MAX_Z_MIN_COST => :utriangle,
-        :FBA_Z_FIX_MAX_VG_MIN_COST => :dtriangle,
-        :FBA_Z_FIX_MIN_VG_MIN_COST => :rtriangle,
-        :FBA_Z_FIX_MAX_ATP_MAX_COST => :ltriangle,
-        :ME_MAX_POL => :circle,
-    )
-
-    METHODS = [
-        :FBA_MAX_Z_MIN_COST,
-        :FBA_Z_FIX_MAX_VG_MIN_COST, 
-        :FBA_Z_FIX_MIN_VG_MIN_COST, 
-        :FBA_Z_FIX_MAX_ATP_MAX_COST,
-        :ME_MAX_POL
-    ]
-
-    METHODS_COLORS = Dict(
-        :FBA_MAX_Z_MIN_COST => :red,
-        :FBA_Z_FIX_MAX_VG_MIN_COST => :pink, 
-        :FBA_Z_FIX_MIN_VG_MIN_COST => :yellow, 
-        :FBA_Z_FIX_MAX_ATP_MAX_COST => :brown,
-        :ME_MAX_POL => :blue
-    )
-
-    METHODS_LABELS = Dict(
-        :FBA_MAX_Z_MIN_COST => "FBA max. z",
-        :FBA_Z_FIX_MAX_VG_MIN_COST => "FBA min. ug",
-        :FBA_Z_FIX_MIN_VG_MIN_COST => "FBA max. ug",
-        :FBA_Z_FIX_MAX_ATP_MAX_COST => "FBA max. ATP",
-        :ME_MAX_POL => "ME",
-    )
-
-    params = (;
-       guidefont = font(16),
-       xtickfont = font(13),
-       ytickfont = font(13),
-       legendfont = font(12),
-       thickness_scaling = 1.7,
-       size = (1700, 900),
-       bottom_margin = 7mm
-    )
-
-    ps = _plot_inner_fluxs_MSE(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_SHAPES)
-
-    for (avD, p) in ps
-        plot!(p; params...)
-        sfig(ChE, p,
-            "inner_flx_MSE", (;avD), ".png"
-        )
-    end
 end

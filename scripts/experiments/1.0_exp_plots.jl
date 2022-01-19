@@ -198,6 +198,82 @@ let
 
 end
 
+## -------------------------------------------------------------------
+# ERR figures
+include("1.6_inner_flx_ERR.jl")
+let
+
+    # [:none, :auto, :circle, :rect, :star5, :diamond, :hexagon, :cross, :xcross, :utriangle, 
+    # :dtriangle, :rtriangle, :ltriangle, :pentagon, :heptagon, :octagon, :star4, :star6, 
+    # :star7, :star8, :vline, :hline, :+, :x].
+    METHODS_SHAPES = Dict(
+        :FBA_MAX_Z_MIN_COST => :utriangle,
+        :FBA_Z_FIX_MAX_VG_MIN_COST => :dtriangle,
+        :FBA_Z_FIX_MIN_VG_MIN_COST => :rtriangle,
+        :FBA_Z_FIX_MAX_ATP_MAX_COST => :ltriangle,
+        :ME_MAX_POL => :circle,
+    )
+
+    METHODS = [
+        :FBA_MAX_Z_MIN_COST,
+        :FBA_Z_FIX_MAX_VG_MIN_COST, 
+        :FBA_Z_FIX_MIN_VG_MIN_COST, 
+        :FBA_Z_FIX_MAX_ATP_MAX_COST,
+        :ME_MAX_POL
+    ]
+
+    METHODS_COLORS = Dict(
+        :FBA_MAX_Z_MIN_COST => :red,
+        :FBA_Z_FIX_MAX_VG_MIN_COST => :pink, 
+        :FBA_Z_FIX_MIN_VG_MIN_COST => :yellow, 
+        :FBA_Z_FIX_MAX_ATP_MAX_COST => :brown,
+        :ME_MAX_POL => :blue
+    )
+
+    METHODS_LABELS = Dict(
+        :FBA_MAX_Z_MIN_COST => "FBA max. z",
+        :FBA_Z_FIX_MAX_VG_MIN_COST => "FBA min. ug",
+        :FBA_Z_FIX_MIN_VG_MIN_COST => "FBA max. ug",
+        :FBA_Z_FIX_MAX_ATP_MAX_COST => "FBA max. ATP",
+        :ME_MAX_POL => "ME",
+    )
+
+    params = (;
+       guidefont = font(16),
+       xtickfont = font(13),
+       ytickfont = font(13),
+       legendfont = font(12),
+       thickness_scaling = 1.7,
+       size = (1700, 900),
+       bottom_margin = 7mm
+    )
+
+    ps = _plot_inner_fluxs_ERR(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_SHAPES, :ME_MAX_POL)
+
+    for (avD, p) in ps
+        plot!(p; params...)
+        sfig(ChE, p,
+            "inner_flx_ERR", (;avD), ".png"
+        )
+    end
+end
+
+## ---------------------------------------------------------------------------------
+# Biomass
+let
+    iJR = ChN.iJR904
+    Data = ChN.NanchenData
+    src = nameof(Data)
+    DAT = ChE.load_DAT(src)
+
+    EXPS = DAT[:EXPS]
+    exp_Ds = DAT[:exp, :flx, "D", EXPS]
+    fba_Ds = DAT[:FBA_MAX_Z_MIN_COST, :flx, "D", EXPS]
+    p = scatter(exp_Ds, fba_Ds; label = "")
+    all_ = sort!([exp_Ds, fba_Ds])
+    p = plot!(p, all_, all_; label = "")
+end
+
 ## ---------------------------------------------------------------------------------
 # figure 11
 include("1.6_var_study_and_marginals.jl")
