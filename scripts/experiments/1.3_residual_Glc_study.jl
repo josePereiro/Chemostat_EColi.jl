@@ -25,19 +25,8 @@ function plot_residual_Glc_study()
             color = :black,
             marker,
         )
-        # plot!(p, EXPS, abs.(sGLC ./ cGLC); 
-        #     label = "",
-        #     color = :black,
-        #     ls = :dash, 
-        #     alpha = 0.8,
-        # )
         
     end
-
-    # plot!(;legend = :bottomright)
-    # sfig(ChE, p, 
-    #     "glc_residual_study", ".png"
-    # )
 
     p
 end

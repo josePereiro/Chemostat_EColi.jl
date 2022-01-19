@@ -118,11 +118,11 @@ let
         ]
         plot!(p;
             title,
-            titlefont = 22,
-            legendfont = 18,
-            guidefont = 22,
-            xtickfont = 21,
-            ytickfont = 21,
+            titlefont = font(22),
+            legendfont = font(18),
+            guidefont = font(22),
+            xtickfont = font(21),
+            ytickfont = font(21),
             thickness_scaling = 1.6,
             size = (1320, 940)
         )
@@ -171,12 +171,12 @@ let
     push!(ps, inner_ps[:tot]...)
 
     params = (;
-       titlefont = 26,
-       axisfont = 26,
-       guidefont = 26,
-       xtickfont = 22,
-       ytickfont = 22,
-       legendfont = 12,
+       titlefont = font(26),
+       axisfont = font(26),
+       guidefont = font(26),
+       xtickfont = font(22),
+       ytickfont = font(22),
+       legendfont = font(12),
        thickness_scaling = 1.6,
        size = (1220, 940)
     )
@@ -196,7 +196,7 @@ let
         layout = (7, 5)
     )
 
-end;
+end
 
 ## ---------------------------------------------------------------------------------
 # figure 11
@@ -209,12 +209,12 @@ let
     size0 = (1220, 940)
     for p in [pGLC, pAC, pz]
         plot!(p; 
-            titlefont = 26,
-            axisfont = 26,
-            xtickfont = 22,
-            ytickfont = 22,
-            legendfont = 22,
-            guidefont = 26,
+            titlefont = font(26),
+            axisfont = font(26),
+            xtickfont = font(22),
+            ytickfont = font(22),
+            legendfont = font(22),
+            guidefont = font(26),
             thickness_scaling = 1.6,
             size = size0
         )
@@ -227,12 +227,12 @@ let
 
     for p in [corr_av_p, corr_va_p]
         plot!(p; 
-            titlefont = 26,
-            axisfont = 26,
-            guidefont = 26,
-            xtickfont = 22,
-            ytickfont = 22,
-            legendfont = 22,
+            titlefont = font(26),
+            axisfont = font(26),
+            guidefont = font(26),
+            xtickfont = font(22),
+            ytickfont = font(22),
+            legendfont = font(22),
             thickness_scaling = 1.6,
             size = 1.5 .* size0
         )
@@ -250,4 +250,4 @@ let
 
     rm.([margs_file, corrs_file]; force = true)
 
-end;
+end
