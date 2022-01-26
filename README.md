@@ -1,6 +1,6 @@
 # Chemostat_EColi
 
-[![Build Status](https://github.com/josePereiro/Chemostat_EColi.jl/workflows/CI/badge.svg)](https://github.com/josePereiro/Chemostat_EColi.jl/actions)
+<!-- [![Build Status](https://github.com/josePereiro/Chemostat_EColi.jl/workflows/CI/badge.svg)](https://github.com/josePereiro/Chemostat_EColi.jl/actions) -->
 
 This is the main package for reproducing the results published at (TODO).
 
