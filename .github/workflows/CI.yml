@@ -33,5 +33,7 @@ jobs:
             ${{ runner.os }}-
       - name: Install Custom Registry
         run: julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(;url="https://github.com/FF-UH/CSC_Registry.jl"))'
+      - name: Install deps
+        run: mkdir -p '/home/runner/work/Chemostat_EColi.jl' && cd '/home/runner/work/Chemostat_EColi.jl' && git clone --depth 1 --branch main --single-branch 'https://github.com/josePereiro/Chemostat_EColi.jl' Chemostat_EColi && cd Chemostat_EColi && julia --startup-file=no 'scripts/0.1_install.jl'
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
