@@ -136,8 +136,9 @@ let
 end
 
 ## ---------------------------------------------------------------------------------
-# figure 9
+# figure 9 and 10
 include("1.4_inner_flx_corr.jl")
+include("1.4a_inner_flx_ERR.jl")
 include("1.5_exchs_flx_correlations.jl")
 
 let
@@ -150,13 +151,32 @@ let
         :ME_MAX_POL
     ]
 
-    METHODS_LABELS = [
-        "FBA max. z",
-        "FBA min. ug",
-        "FBA max. ug",
-        "FBA max. ATP",
-        "ME",
-    ]
+    METHODS_LABELS = Dict(
+        :FBA_MAX_Z_MIN_COST => "FBA max. z",
+        :FBA_Z_FIX_MAX_VG_MIN_COST => "FBA min. ug",
+        :FBA_Z_FIX_MIN_VG_MIN_COST => "FBA max. ug",
+        :FBA_Z_FIX_MAX_ATP_MAX_COST => "FBA max. ATP",
+        :ME_MAX_POL => "ME",
+    )
+
+    METHODS_SHAPES = Dict(
+        :FBA_MAX_Z_MIN_COST => :utriangle,
+        :FBA_Z_FIX_MAX_VG_MIN_COST => :dtriangle,
+        :FBA_Z_FIX_MIN_VG_MIN_COST => :rtriangle,
+        :FBA_Z_FIX_MAX_ATP_MAX_COST => :ltriangle,
+        :ME_MAX_POL => :circle,
+    )
+
+    METHODS_COLORS = Dict(
+        :FBA_MAX_Z_MIN_COST => :red,
+        :FBA_Z_FIX_MAX_VG_MIN_COST => :pink, 
+        :FBA_Z_FIX_MIN_VG_MIN_COST => :yellow, 
+        :FBA_Z_FIX_MAX_ATP_MAX_COST => :brown,
+        :ME_MAX_POL => :blue
+    )
+
+    ## ------------------------------------------------------
+    # figure_9
 
     exch_ps = plot_exch_corrs(METHODS, METHODS_LABELS)
     inner_ps = plot_inner_plots(METHODS, METHODS_LABELS)
@@ -170,19 +190,17 @@ let
     push!(ps, inner_ps[0.4]...)
     push!(ps, inner_ps[:tot]...)
 
-    params = (;
-       titlefont = font(26),
-       axisfont = font(26),
-       guidefont = font(26),
-       xtickfont = font(22),
-       ytickfont = font(22),
-       legendfont = font(12),
-       thickness_scaling = 1.6,
-       size = (1220, 940)
-    )
-
     for p in ps
-        plot!(p; params...)
+        plot!(p; 
+            titlefont = font(26),
+            axisfont = font(26),
+            guidefont = font(26),
+            xtickfont = font(22),
+            ytickfont = font(22),
+            legendfont = font(12),
+            thickness_scaling = 1.6,
+            size = (1220, 940)
+        )
     end
 
     # add margin
@@ -196,86 +214,30 @@ let
         layout = (7, 5)
     )
 
-end
-
-## -------------------------------------------------------------------
-# ERR figures
-include("1.6_inner_flx_ERR.jl")
-let
-
-    # [:none, :auto, :circle, :rect, :star5, :diamond, :hexagon, :cross, :xcross, :utriangle, 
-    # :dtriangle, :rtriangle, :ltriangle, :pentagon, :heptagon, :octagon, :star4, :star6, 
-    # :star7, :star8, :vline, :hline, :+, :x].
-    METHODS_SHAPES = Dict(
-        :FBA_MAX_Z_MIN_COST => :utriangle,
-        :FBA_Z_FIX_MAX_VG_MIN_COST => :dtriangle,
-        :FBA_Z_FIX_MIN_VG_MIN_COST => :rtriangle,
-        :FBA_Z_FIX_MAX_ATP_MAX_COST => :ltriangle,
-        :ME_MAX_POL => :circle,
-    )
-
-    METHODS = [
-        :FBA_MAX_Z_MIN_COST,
-        :FBA_Z_FIX_MAX_VG_MIN_COST, 
-        :FBA_Z_FIX_MIN_VG_MIN_COST, 
-        :FBA_Z_FIX_MAX_ATP_MAX_COST,
-        :ME_MAX_POL
-    ]
-
-    METHODS_COLORS = Dict(
-        :FBA_MAX_Z_MIN_COST => :red,
-        :FBA_Z_FIX_MAX_VG_MIN_COST => :pink, 
-        :FBA_Z_FIX_MIN_VG_MIN_COST => :yellow, 
-        :FBA_Z_FIX_MAX_ATP_MAX_COST => :brown,
-        :ME_MAX_POL => :blue
-    )
-
-    METHODS_LABELS = Dict(
-        :FBA_MAX_Z_MIN_COST => "FBA max. z",
-        :FBA_Z_FIX_MAX_VG_MIN_COST => "FBA min. ug",
-        :FBA_Z_FIX_MIN_VG_MIN_COST => "FBA max. ug",
-        :FBA_Z_FIX_MAX_ATP_MAX_COST => "FBA max. ATP",
-        :ME_MAX_POL => "ME",
-    )
-
-    params = (;
-       guidefont = font(16),
-       xtickfont = font(13),
-       ytickfont = font(13),
-       legendfont = font(12),
-       thickness_scaling = 1.7,
-       size = (1700, 900),
-       bottom_margin = 7mm
-    )
+    ## ------------------------------------------------------
+    # figure_10
 
     ps = _plot_inner_fluxs_ERR(METHODS, METHODS_LABELS, METHODS_COLORS, METHODS_SHAPES, :ME_MAX_POL)
 
-    for (avD, p) in ps
-        plot!(p; params...)
-        sfig(ChE, p,
-            "inner_flx_ERR", (;avD), ".png"
-        )
-    end
+    tot_p = ps[:tot]
+    plot!(tot_p; 
+        guidefont = font(16),
+        xtickfont = font(13),
+        ytickfont = font(13),
+        legendfont = font(12),
+        thickness_scaling = 1.7,
+        size = (1700, 900),
+        bottom_margin = 7mm
+    )
+
+    sfig(ChE, tot_p,
+        "figure_10", ".png"
+    )
+
 end
 
 ## ---------------------------------------------------------------------------------
-# Biomass
-let
-    iJR = ChN.iJR904
-    Data = ChN.NanchenData
-    src = nameof(Data)
-    DAT = ChE.load_DAT(src)
-
-    EXPS = DAT[:EXPS]
-    exp_Ds = DAT[:exp, :flx, "D", EXPS]
-    fba_Ds = DAT[:FBA_MAX_Z_MIN_COST, :flx, "D", EXPS]
-    p = scatter(exp_Ds, fba_Ds; label = "")
-    all_ = sort!([exp_Ds, fba_Ds])
-    p = plot!(p, all_, all_; label = "")
-end
-
-## ---------------------------------------------------------------------------------
-# figure 11
+# figure 12
 include("1.6_var_study_and_marginals.jl")
 
 let    
@@ -320,10 +282,11 @@ let
     )
 
     sfig(ChE, lfig.([margs_file, corrs_file]),
-        "figure_11", ".png";
+        "figure_12", ".png";
         layout = (1, 2)
     )
 
     rm.([margs_file, corrs_file]; force = true)
 
+    nothing
 end

@@ -22,7 +22,7 @@ let
         # thickness_scaling = 1.0, 
         # xlabel = "exp", 
         # ylabel = "model",
-        titlefont = 15,
+        titlefont = font(15),
         # aspectatio = 1.0,
         # xguidefontsize = fontsize, 
         # yguidefontsize = fontsize

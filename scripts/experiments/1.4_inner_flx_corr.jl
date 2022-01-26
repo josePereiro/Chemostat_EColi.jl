@@ -1,5 +1,5 @@
 ## ----------------------------------------------------------------------------
-function plot_inner_plots(METHODS, METHODS_LABELS = string.(METHODS))
+function plot_inner_plots(METHODS, METHODS_LABELS)
 
     # This is just for Nanchen
     Data = Nd
@@ -32,7 +32,8 @@ function plot_inner_plots(METHODS, METHODS_LABELS = string.(METHODS))
         ider_colors = Dict(id => c for (id, c) in zip(internals, color_pool))    
 
         ps = Plots.Plot[]
-        for (method_label, method) in zip(METHODS_LABELS, METHODS)
+        for method in METHODS
+            method_label = METHODS_LABELS[method]
 
             p = plot(;
                 xlabel = _textbf("exp abs. flux"), 

@@ -26,22 +26,7 @@ Pkg.activate(CH_ECOLI_DIR)
 
 # ----------------------------------------------------------------------------
 # ARGS
-using ArgParse
-
-set = ArgParseSettings()
-@add_arg_table! set begin
-    "--git-cmd"
-        help = "the git command to use"   
-        default = "git"
-end
-
-if isinteractive()
-    # Dev values
-    GIT_CMD = "git"
-else
-    parsed_args = parse_args(set)
-    GIT_CMD = parsed_args["git-cmd"]
-end
+GIT_CMD = "git"
 
 ## ------------------------------------------------------------------
 # globals
@@ -93,30 +78,34 @@ let
 
         _info("clone and checkout"; pkgname, tag)
         if !isdir(pkg_path)
-            cd(PROJ_ROOT)
-            _clone_tag(pkgname, url, tag)
+            cd(PROJ_ROOT) do
+                _clone_tag(pkgname, url, tag)
+            end
         end
 
-        cd(pkg_path)
-        _checkout_tag(tag)
+        cd(pkg_path) do
+            _checkout_tag(tag)
+        end
         
-        # add
-        _info("develop"; pkgname, tag)
-        Pkg.activate(CH_ECOLI_DIR)
-        Pkg.develop(;url=relpath(pkg_path), preserve = PRESERVE_ALL)
+        # # add
+        # _info("develop"; pkgname, tag)
+        # Pkg.activate(CH_ECOLI_DIR)
+        # Pkg.develop(;url=relpath(pkg_path), preserve = PRESERVE_ALL)
         
-        _info("instanciate"; pkgname, tag)
-        Pkg.activate(pkg_path)
-        Pkg.instantiate()
+        # _info("instanciate"; pkgname, tag)
+        # Pkg.activate(pkg_path)
+        # Pkg.instantiate()
 
-        cd(PROJ_ROOT)
+        # cd(PROJ_ROOT)
     end
 end
 
 ## ------------------------------------------------------------------
-# precompile
-_info("precompile Chemostat_EColi")
+_info("activate Chemostat_EColi")
 Pkg.activate(CH_ECOLI_DIR)
+_info("instantiate Chemostat_EColi")
+Pkg.instantiate()
+_info("precompile Chemostat_EColi")
 Pkg.precompile()
 
 ## ------------------------------------------------------------------
@@ -124,17 +113,17 @@ Pkg.precompile()
 _info("Testing import")
 try
     import Chemostat_Kayser2005
+    _info("Chemostat_Kayser2005 imported")
     import Chemostat_Nanchen2006
+    _info("Chemostat_Nanchen2006 imported")
     import Chemostat_Folsom2014
+    _info("Chemostat_Folsom2014 imported")
     import Chemostat_InSilico
+    _info("Chemostat_InSilico imported")
 catch err
     @warn("Error loading source package, see scripts/0.1_install.jl")
     rethrow(err)
 end
-
-## ------------------------------------------------------------------
-_info("instantiate Chemostat_EColi")
-Pkg.instantiate()
 
 # ## ------------------------------------------------------------------
 # # TODO: make repo public
@@ -145,13 +134,16 @@ Pkg.instantiate()
 #     pkg_path = joipath(PROJ_ROOT, pkgname)
 #     tag = ""
 #     url="https://github.com/josePereiro/MaxEnt_EColi_paper"
-# 
+
 #     if !isdir(pkg_path)
-#         cd(PROJ_ROOT)
-#         _clone_tag(pkgname, url, tag)
+#         cd(PROJ_ROOT) do
+#             _clone_tag(pkgname, url, tag)
+#         end
 #     end
-#     cd(pkg_path)
-#     _checkout_tag(tag)
+#     cd(pkg_path) do
+#         _checkout_tag(tag)
+#     end
 # end
 
+## ------------------------------------------------------------------
 _info("All good")

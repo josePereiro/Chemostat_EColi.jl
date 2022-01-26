@@ -1,10 +1,11 @@
 ## -------------------------------------------------------------------
 # flx correlations
-function plot_exch_corrs(METHODS, METHODS_LABELS = string.(METHODS))
+function plot_exch_corrs(METHODS, METHODS_LABELS)
 
     ps = Plots.Plot[]
 
-    for (method_label, method) in zip(METHODS_LABELS, METHODS)
+    for method in METHODS
+        method_label = METHODS_LABELS[method]
 
         p = plot(;
             xlabel = _textbf("exp abs. flux"), 
@@ -60,11 +61,6 @@ function plot_exch_corrs(METHODS, METHODS_LABELS = string.(METHODS))
         push!(ps, p)
 
     end # for (method_label, method)
-
-    # sfig(ChE, ps, 
-    #     "exchs_corr", ".png", 
-    #     layout = (1, length(ps)), 
-    # )
 
     return ps
 end 

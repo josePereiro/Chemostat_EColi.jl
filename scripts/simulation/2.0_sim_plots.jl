@@ -82,10 +82,10 @@ let
    # plot
    for p in [Xp, sgp]
       plot!(p;
-         titlefont = 27,
-         guidefont = 21,
-         xtickfont = 21,
-         ytickfont = 21,
+         titlefont = font(27),
+         guidefont = font(21),
+         xtickfont = font(21),
+         ytickfont = font(21),
          thickness_scaling = 1.6,
          size = (1220, 940)
       )
@@ -109,11 +109,11 @@ let
 
    for (title, p) in zip('A':'Z', [panel1, panel2, panel3])
       plot!(p; 
-         titlefont = 22,
-         guidefont = 19,
-         xtickfont = 18,
-         ytickfont = 18,
-         legendfont = 14,
+         titlefont = font(22),
+         guidefont = font(19),
+         xtickfont = font(18),
+         ytickfont = font(18),
+         legendfont = font(14),
          thickness_scaling = 1.6,
          size = (1220, 940), 
          title
@@ -137,9 +137,9 @@ let
 
    for p in ps
       plot!(p;
-         guidefont = 26,
-         xtickfont = 21,
-         ytickfont = 21,
+         guidefont = font(26),
+         xtickfont = font(21),
+         ytickfont = font(21),
          thickness_scaling = 1.6,
          size = (1220, 900),
          rightmargin = 2mm
@@ -167,11 +167,11 @@ let
    plot!(ps[1]; bottom_margin=5mm)
    plot!(ps[4]; bottom_margin=5mm)
    for p in ps
-      plot!(p; titlefont = 22,
-         guidefont = 22,
-         xtickfont = 18,
-         ytickfont = 18,
-         legendfont = 14,
+      plot!(p; titlefont = font(22),
+         guidefont = font(22),
+         xtickfont = font(18),
+         ytickfont = font(18),
+         legendfont = font(14),
          thickness_scaling = 1.6,
          size = (1220, 940)
       )
@@ -188,22 +188,23 @@ end
 
 
 ## ------------------------------------------------------
-# Figure 10
+# Figure 11
 include("2.2_sim3D_dead_explosion_map.jl")
 let
    p = plot_dead_explosion_map(simid)
 
-   plot!(p; titlefont = 22,
-      guidefont = 22,
-      xtickfont = 18,
-      ytickfont = 18,
-      legendfont = 14,
+   plot!(p; 
+      titlefont = font(22),
+      guidefont = font(22),
+      xtickfont = font(18),
+      ytickfont = font(18),
+      legendfont = font(14),
       thickness_scaling = 1.6,
       size = (1220, 940)
    )
 
    ffile = sfig(ChE, p, 
-      "figure_10", ".png"
+      "figure_11", ".png"
    )
    @info("Done", ffile)
 
