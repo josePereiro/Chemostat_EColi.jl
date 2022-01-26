@@ -16,7 +16,7 @@ git version && echo && julia -e 'println(VERSION)' && echo "Test Passed"
 For installing all required repositories (this part require internet on the terminal) run the follow command in an empty folder.
 
 ```bash
-git clone --depth 1 --branch v0.1.0 --single-branch \
+git clone --depth 1 --branch main --single-branch \
 https://github.com/josePereiro/Chemostat_EColi.jl Chemostat_EColi && \
 cd Chemostat_EColi && \
 julia --startup-file=no scripts/0.1_install.jl
