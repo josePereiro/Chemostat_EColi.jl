@@ -22,7 +22,7 @@ cd Chemostat_EColi && \
 julia --startup-file=no scripts/0.1_install.jl
 ```
 
-To reproduce the results (`WARNING`: this ~ 2 days in a 4 cpu 2019 MacBook Air), run the follow command (in the `Chemostat_EColi` folder):
+To reproduce the results (`WARNING`: this takes ~ 2 days in a core i5 cpu 2019 MacBook Air), run the follow command (in the `Chemostat_EColi` folder):
 
 ```bash
 julia --startup-file=no scripts/0.2_make.jl
