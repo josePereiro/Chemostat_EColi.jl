@@ -2,6 +2,8 @@
 
 <!-- [![Build Status](https://github.com/josePereiro/Chemostat_EColi.jl/workflows/CI/badge.svg)](https://github.com/josePereiro/Chemostat_EColi.jl/actions) -->
 
+[![DOI](https://zenodo.org/badge/355884387.svg)](https://zenodo.org/badge/latestdoi/355884387)
+
 This is the main package for reproducing the results published at (TODO).
 
 ## Installation (macOs or linux)
