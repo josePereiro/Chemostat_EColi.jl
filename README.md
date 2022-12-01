@@ -4,7 +4,10 @@
 
 [![DOI](https://zenodo.org/badge/355884387.svg)](https://zenodo.org/badge/latestdoi/355884387)
 
-This is the main package for reproducing the results published at (TODO).
+This is the main package for reproducing the results published at:
+
+> Pereiro-Morejón, José Antonio, Jorge Fernandez-de-Cossio-Diaz, and Roberto Mulet. “Inference of Metabolic Fluxes in Nutrient-Limited Continuous Cultures: A Maximum Entropy Approach with the Minimum Information.” IScience 25, no. 12 (December 22, 2022): 105450. https://doi.org/10.1016/j.isci.2022.105450.
+
 
 ## Installation (macOs or linux)
 
